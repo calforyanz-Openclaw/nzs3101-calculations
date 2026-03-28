@@ -384,8 +384,9 @@
         // Elastic with near-fault
         const C = ZRuLimited * Ch * nearFault;
         
-        // Design spectrum
-        const Cd = Sp * C * kmu_T;
+        // Design spectrum per NZS 1170.5 Clause 5.2.1:
+        // Cd(T) = Sp × C(T) / kμ (kμ reduces the elastic spectrum)
+        const Cd = Sp * C / kmu_T;
         
         data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), C: C.toFixed(4), kmu: kmu_T.toFixed(2), Cd: Cd.toFixed(4) });
       }
@@ -393,7 +394,7 @@
       // Key values
       const Ch_T1 = interpolateCh(T1, table);
       const Ce_T1 = ZRuLimited * Ch_T1 * nearFault;
-      const Cd_T1 = Sp * Ce_T1 * kmu;
+      const Cd_T1 = Sp * Ce_T1 / kmu;
 
       document.getElementById('Zval').textContent = Z.toFixed(2);
       document.getElementById('ZRu').textContent = ZRuLimited.toFixed(3);

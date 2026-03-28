@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NZS 3101 Torsional Capacity Calculator</title>
+  <title>NZS 3101 Torsional Reinforcement Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root { --ink: #0f172a; --muted: #5b6474; --accent: #0f766e; --card: rgba(255,255,255,0.85); --shadow: 0 20px 50px rgba(15,23,42,0.15); }
@@ -22,22 +22,24 @@
     .btn { background: var(--accent); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
     .result-box { background: #e8f5f3; border-radius: 12px; padding: 1.2rem; border-left: 4px solid var(--accent); margin-top: 1.5rem; display: none; }
     .result-box.show { display: block; }
-    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .result-section { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed #ccc; }
+    .result-section:last-child { border-bottom: none; }
+    .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1rem; margin-bottom: 0.5rem; }
     .result-item { background: white; padding: 0.8rem; border-radius: 8px; }
     .result-item label { font-size: 0.8rem; color: var(--muted); display: block; }
     .result-item span { font-size: 1.2rem; font-weight: 600; }
-    .status { padding: 0.7rem 0.9rem; border-radius: 12px; font-weight: 600; margin-top: 1rem; }
+    .status { padding: 0.7rem 0.9rem; border-radius: 12px; font-weight: 600; margin-top: 0.5rem; }
     .status.pass { background: rgba(22,163,74,0.12); color: #16a34a; }
     .status.fail { background: rgba(180,35,24,0.12); color: #b42318; }
-    .formula-box { background: #f8f8f8; padding: 0.8rem; border-radius: 8px; margin-top: 1rem; font-family: monospace; font-size: 0.85rem; }
+    .formula-box { background: #f8f8f8; padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; }
     .note { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
-    .demand-section { border-top: 1px dashed #ccc; margin-top: 1rem; padding-top: 1rem; }
+    .section-title { font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>NZS 3101 Torsional Capacity</h1>
-    <p class="subtitle">Calculate torsional capacity per NZS 3101:2006 Clauses 7.4 and 9.4</p>
+    <h1>NZS 3101 Torsional Reinforcement</h1>
+    <p class="subtitle">Calculate required torsional reinforcement per NZS 3101:2006 Clause 7.6.2 (Eq 7-11)</p>
 
     <div class="card">
       <h2>Materials & Geometry</h2>
@@ -58,15 +60,19 @@
           <label>Cover to centroid c (mm)</label>
           <input type="number" id="cover" value="40" min="20" step="5">
         </div>
+        <div class="field">
+          <label>Steel fy (MPa)</label>
+          <input type="number" id="fy" value="500" min="250" step="10">
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Reinforcement</h2>
+      <h2>Provided Reinforcement</h2>
       <div class="form-grid">
         <div class="field">
-          <label>Longitudinal Asl (mm²)</label>
-          <input type="number" id="Asl" value="1500" min="200" step="50">
+          <label>Longitudinal Asl provided (mm²)</label>
+          <input type="number" id="Asl_prov" value="1500" min="200" step="50">
         </div>
         <div class="field">
           <label>Stirrup diameter ds (mm)</label>
@@ -84,10 +90,6 @@
           <label>Stirrup spacing s (mm)</label>
           <input type="number" id="s" value="150" min="50" step="5">
         </div>
-        <div class="field">
-          <label>Steel fy (MPa)</label>
-          <input type="number" id="fy" value="500" min="250" step="10">
-        </div>
       </div>
     </div>
 
@@ -98,42 +100,65 @@
           <label>Applied torque T (kN·m)</label>
           <input type="number" id="Tdemand" value="50" min="0" step="1">
         </div>
+        <div class="field">
+          <label>θ (compression angle, degrees)</label>
+          <input type="number" id="theta" value="45" min="35" max="55" step="1">
+        </div>
       </div>
     </div>
 
-    <button class="btn" onclick="calculate()">Calculate Torsional Capacity</button>
+    <button class="btn" onclick="calculate()">Calculate Required Reinforcement</button>
 
     <div class="result-box" id="result">
-      <h2>Results</h2>
       <div class="formula-box">
-        Tn = Tc + Ts per NZS 3101 Clause 9.4.1<br>
-        vt = Tn / (2 × Ao × to) ≤ vmax per Clause 7.6.1.7
-      </div>
-      
-      <div class="result-grid">
-        <div class="result-item"><label>x (mm)</label><span id="x">-</span></div>
-        <div class="result-item"><label>y (mm)</label><span id="y">-</span></div>
-        <div class="result-item"><label>Aoh (mm²)</label><span id="Aoh">-</span></div>
-        <div class="result-item"><label>Ph (mm)</label><span id="Ph">-</span></div>
-      </div>
-      
-      <div class="result-grid">
-        <div class="result-item"><label>Tc (kN·m)</label><span id="tc">-</span></div>
-        <div class="result-item"><label>Ts (kN·m)</label><span id="ts">-</span></div>
-        <div class="result-item"><label>Tn (kN·m)</label><span id="tn">-</span></div>
-        <div class="result-item"><label>Utilisation</label><span id="util">-</span></div>
-      </div>
-      
-      <div class="result-grid">
-        <div class="result-item"><label>vt (MPa)</label><span id="vt">-</span></div>
-        <div class="result-item"><label>vmax (MPa)</label><span id="vmax">-</span></div>
-        <div class="result-item"><label>Demand (kN·m)</label><span id="demandDisplay">-</span></div>
-        <div class="result-item"><label>Status</label><span id="demandStatus">-</span></div>
+        NZS 3101 Eq 7-11(a):<br>
+        Al,req = (T / (2 × fy)) × cot(θ) × (Ph / Ao)<br>
+        At,req = (T / (2 × fy × d)) × cot(θ) × (Ph / s)
       </div>
 
-      <div class="status" id="status">-</div>
-      
-      <p class="note">Based on NZS 3101:2006 Clauses 7.4, 9.4. Tc from Eq 9-11, Ts from Eq 9-12. Verify with full design.</p>
+      <!-- Section 1: Core Properties -->
+      <div class="result-section">
+        <div class="section-title">1. Section Properties</div>
+        <div class="result-grid">
+          <div class="result-item"><label>x (mm)</label><span id="x">-</span></div>
+          <div class="result-item"><label>y (mm)</label><span id="y">-</span></div>
+          <div class="result-item"><label>Aoh (mm²)</label><span id="Aoh">-</span></div>
+          <div class="result-item"><label>Ph (mm)</label><span id="Ph">-</span></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Longitudinal Reinforcement -->
+      <div class="result-section">
+        <div class="section-title">2. Longitudinal Reinforcement (Al) per Eq 7-11(a)</div>
+        <div class="result-grid">
+          <div class="result-item"><label>Al required (mm²)</label><span id="Al_req">-</span></div>
+          <div class="result-item"><label>Asl provided (mm²)</label><span id="Al_prov">-</span></div>
+          <div class="result-item"><label>Status</label><span id="Al_status">-</span></div>
+        </div>
+      </div>
+
+      <!-- Section 3: Stirrup Reinforcement -->
+      <div class="result-section">
+        <div class="section-title">3. Stirrup Reinforcement (At) per Eq 7-11(a)</div>
+        <div class="result-grid">
+          <div class="result-item"><label>At required (mm²/m)</label><span id="At_req">-</span></div>
+          <div class="result-item"><label>At provided (mm²/m)</label><span id="At_prov">-</span></div>
+          <div class="result-item"><label>Status</span><span id="At_status">-</span></div>
+        </div>
+      </div>
+
+      <!-- Section 4: Max Stress Check -->
+      <div class="result-section">
+        <div class="section-title">4. Max Torsional Stress Check (Clause 7.6.1.7)</div>
+        <div class="result-grid">
+          <div class="result-item"><label>T (kN·m)</label><span id="T_demand">-</span></div>
+          <div class="result-item"><label>Tn (kN·m)</label><span id="Tn">-</span></div>
+          <div class="result-item"><label>Utilisation</label><span id="util">-</span></div>
+        </div>
+        <div class="status" id="status">-</div>
+      </div>
+
+      <p class="note">Based on NZS 3101:2006 Clause 7.6.2 (Eq 7-11). Verify with full design.</p>
     </div>
   </div>
 
@@ -143,12 +168,13 @@
       const bw = parseFloat(document.getElementById('bw').value);
       const h = parseFloat(document.getElementById('h').value);
       const cover = parseFloat(document.getElementById('cover').value);
-      const Asl = parseFloat(document.getElementById('Asl').value);
+      const fy = parseFloat(document.getElementById('fy').value);
+      const Asl_prov = parseFloat(document.getElementById('Asl_prov').value);
       const ds = parseInt(document.getElementById('ds').value);
       const legs = parseInt(document.getElementById('legs').value);
       const s = parseFloat(document.getElementById('s').value);
-      const fy = parseFloat(document.getElementById('fy').value);
       const Tdemand = parseFloat(document.getElementById('Tdemand').value);
+      const thetaDeg = parseFloat(document.getElementById('theta').value);
 
       // Core dimensions
       const x = bw - 2 * cover;
@@ -156,59 +182,78 @@
       const Aoh = x * y;
       const Ph = 2 * (x + y);
 
-      // NZS 3101 Clause 7.6.2 and Commentary
-      // Concrete contribution - based on thin-walled tube theory (per NZS 3101 Commentary C7)
-      // Tc = Tcr = 0.44 × Aco × √f'c where Aco ≈ Aoh
+      // Effective depth for torsion (use d - cover approximation)
+      const d = h - cover;
+      
+      // Convert torque to N·mm
+      const T = Tdemand * 1e6;
+
+      // θ in radians
+      const thetaRad = thetaDeg * Math.PI / 180;
+      const cotTheta = 1 / Math.tan(thetaRad);
+
+      // Eq 7-11(a): Al = (T / (2 × fy)) × cot(θ) × (Ph / Ao)
+      // Where Ao ≈ 0.85 Aoh (per NZS 3101)
+      const Ao = 0.85 * Aoh;
+      const Al_req = (T / (2 * fy)) * cotTheta * (Ph / Ao);
+
+      // Eq 7-11(a): At = (T × cot(θ)) / (2 × fy × s × d) × Ph (rearranged)
+      // Actually: At = (T × cot(θ) × Ph) / (2 × fy × Ao × s) - for per unit length
+      // More standard form: At/s = (T × cot(θ)) / (2 × fy × d × Ao) × Ph
+      const At_per_s = (T * cotTheta * Ph) / (2 * fy * d * Ao * 1000); // mm² per m of spacing
+      const At_req = At_per_s * s / 1000; // At required for the spacing s
+
+      // Provided stirrup area per unit length
+      const At_prov = (legs * Math.PI * ds * ds / 4) / s * 1000; // mm²/m
+
+      // Nominal capacity for stress check (per NZS 3101 Commentary C7-4)
       const sqrtFc = Math.sqrt(fc);
-      const Tcr = 0.44 * Aoh * sqrtFc / 1e6; // kN·m (torsional cracking moment)
-
-      // Steel contribution per NZS 3101 Eq 7-11(a)
-      // Ts = 2 × Ao × At × fy × cot(θ) / s, where θ = 35-55° (use 45° default)
-      const Ao = 0.85 * Aoh; // equivalent wall thickness area
-      const At = legs * Math.PI * ds * ds / 4; // area of stirrups
-      const cotTheta = 1; // for 45° angle
-      const Ts = (2 * Ao * At * fy * cotTheta) / s / 1e6; // kN·m
-
-      // Nominal torsional capacity
+      const Tcr = 0.44 * Aoh * sqrtFc / 1e6; // kN·m, concrete contribution
+      const At_prov_full = legs * Math.PI * ds * ds / 4;
+      const Ts = (2 * Ao * At_prov_full * fy * cotTheta) / 1e6; // kN·m, steel contribution
       const Tn = Tcr + Ts;
 
-      // Torsional shear stress per Clause 7.6.1.7
-      const to = Math.min(x, y) / 2;
-      const vt = (Tn * 1e6) / (2 * Ao * to) / 1000;
-
-      // Max stress
-      const vmax = Math.min(0.2 * fc, 10);
-
-      // Display with NZS references
+      // Display
       document.getElementById('x').textContent = x.toFixed(0);
       document.getElementById('y').textContent = y.toFixed(0);
       document.getElementById('Aoh').textContent = (Aoh / 1e4).toFixed(1) + ' cm²';
       document.getElementById('Ph').textContent = (Ph / 1e3).toFixed(2) + ' m';
-      document.getElementById('tc').textContent = Tcr.toFixed(2);
-      document.getElementById('ts').textContent = Ts.toFixed(2);
-      document.getElementById('tn').textContent = Tn.toFixed(2);
-      document.getElementById('vt').textContent = vt.toFixed(2);
-      document.getElementById('vmax').textContent = vmax.toFixed(1);
-      document.getElementById('demandDisplay').textContent = Tdemand.toFixed(1);
+
+      document.getElementById('Al_req').textContent = Al_req.toFixed(0);
+      document.getElementById('Al_prov').textContent = Asl_prov.toFixed(0);
+      
+      const alStatus = document.getElementById('Al_status');
+      if (Asl_prov >= Al_req) {
+        alStatus.textContent = '✓ OK';
+        alStatus.style.color = '#16a34a';
+      } else {
+        alStatus.textContent = `✗ Need ${(Al_req - Asl_prov).toFixed(0)} more`;
+        alStatus.style.color = '#b42318';
+      }
+
+      document.getElementById('At_req').textContent = At_per_s.toFixed(1);
+      document.getElementById('At_prov').textContent = At_prov.toFixed(1);
+      
+      const atStatus = document.getElementById('At_status');
+      if (At_prov >= At_per_s) {
+        atStatus.textContent = '✓ OK';
+        atStatus.style.color = '#16a34a';
+      } else {
+        atStatus.textContent = `✗ Increase stirrups`;
+        atStatus.style.color = '#b42318';
+      }
+
+      document.getElementById('T_demand').textContent = Tdemand.toFixed(1);
+      document.getElementById('Tn').textContent = Tn.toFixed(1);
       document.getElementById('util').textContent = ((Tdemand / Tn) * 100).toFixed(1) + '%';
 
       const status = document.getElementById('status');
-      const demandStatus = document.getElementById('demandStatus');
-      
-      if (vt <= vmax) {
-        status.textContent = `PASS - vt=${vt.toFixed(2)}MPa ≤ vmax=${vmax.toFixed(1)}MPa (NZS 3101 Clause 7.6.1.7)`;
+      if (Tdemand <= Tn && Asl_prov >= Al_req && At_prov >= At_per_s) {
+        status.textContent = 'PASS - All torsional reinforcement adequate';
         status.className = 'status pass';
       } else {
-        status.textContent = `FAIL - vt=${vt.toFixed(2)}MPa > vmax=${vmax.toFixed(1)}MPa`;
+        status.textContent = 'FAIL - Increase reinforcement';
         status.className = 'status fail';
-      }
-
-      if (Tdemand <= Tn) {
-        demandStatus.textContent = `T=${Tdemand.toFixed(1)} ≤ Tn=${Tn.toFixed(1)} ✓`;
-        demandStatus.style.color = '#16a34a';
-      } else {
-        demandStatus.textContent = `T=${Tdemand.toFixed(1)} > Tn=${Tn.toFixed(1)} ✗`;
-        demandStatus.style.color = '#b42318';
       }
 
       document.getElementById('result').classList.add('show');

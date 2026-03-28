@@ -173,6 +173,11 @@
 
       const Tn = Tc + Ts;
 
+      // Max torsional stress check per NZS 3101 Clause 7.6.1.7
+      const vmax = Math.min(0.2 * fc, 10);
+      const vt = (Tn * 1e6) / (2 * Ao * (x + y) / 2) / 1000; // shear stress from torsion
+      const stressOK = vt <= vmax;
+
       document.getElementById('x').textContent = x.toFixed(0) + ' mm';
       document.getElementById('y').textContent = y.toFixed(0) + ' mm';
       document.getElementById('Aoh').textContent = (Aoh/1e4).toFixed(2) + ' cm²';
@@ -182,8 +187,13 @@
       document.getElementById('tn').textContent = Tn.toFixed(2) + ' kN·m';
 
       const status = document.getElementById('status');
-      status.textContent = 'Torsional capacity calculated';
-      status.className = 'status';
+      if (stressOK) {
+        status.textContent = 'PASS - Torsional capacity OK (vt=' + vt.toFixed(2) + 'MPa ≤ vmax=' + vmax.toFixed(1) + 'MPa)';
+        status.className = 'status';
+      } else {
+        status.textContent = 'FAIL - Increase section or reinforcement (vt=' + vt.toFixed(2) + 'MPa > vmax=' + vmax.toFixed(1) + 'MPa)';
+        status.className = 'status danger';
+      }
 
       const detail = `Step-by-step:
 1. x = bw - 2c = ${bw} - 2×${cover} = ${x} mm (core dimension)

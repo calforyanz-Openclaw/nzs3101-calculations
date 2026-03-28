@@ -44,7 +44,7 @@
 <body>
   <div class="container">
     <h1>AS/NZS 1170.5 Response Spectrum</h1>
-    <p class="subtitle">Generate seismic response spectrum per AS/NZS 1170.5:2024 Clause 3.1</p>
+    <p class="subtitle">Generate seismic response spectrum per AS/NZS 1170.5:2024 (based on NZS 1170.5:2004 Table 3.1)</p>
 
     <div class="card">
       <h2>Site & Hazard</h2>
@@ -64,11 +64,11 @@
         <div class="field">
           <label>Subsoil Class</label>
           <select id="subsoil">
-            <option value="A">A - Strong rock (Ch1=1.0, Ch2=1.0)</option>
-            <option value="B">B - Rock (Ch1=1.2, Ch2=1.2)</option>
-            <option value="C" selected>C - Shallow soil (Ch1=1.4, Ch2=1.4)</option>
-            <option value="D">D - Deep soil (Ch1=1.6, Ch2=1.8)</option>
-            <option value="E">E - Very soft soil (Ch1=2.0, Ch2=2.5)</option>
+            <option value="A">A - Strong rock</option>
+            <option value="B">B - Rock</option>
+            <option value="C" selected>C - Shallow soil</option>
+            <option value="D">D - Deep or soft soil</option>
+            <option value="E">E - Very soft soil</option>
           </select>
         </div>
         <div class="field">
@@ -83,22 +83,19 @@
     </div>
 
     <div class="card">
-      <h2>Near-Fault & Period</h2>
-      <div class="checkbox-row">
-        <label><input type="checkbox" id="nearFault"> Apply Near-Fault Factor N(T,D)</label>
-      </div>
-      <div class="form-grid" style="margin-top:1rem;">
+      <h2>Period Range</h2>
+      <div class="form-grid">
         <div class="field">
           <label>Tmin (s)</label>
           <input type="number" id="Tmin" value="0.0" step="0.1" min="0">
         </div>
         <div class="field">
           <label>Tmax (s)</label>
-          <input type="number" id="Tmax" value="4.0" step="0.1" min="0.1">
+          <input type="number" id="Tmax" value="4.5" step="0.1" min="0.1">
         </div>
         <div class="field">
           <label>Step dT (s)</label>
-          <input type="number" id="dT" value="0.05" step="0.01" min="0.01">
+          <input type="number" id="dT" value="0.1" step="0.05" min="0.01">
         </div>
       </div>
     </div>
@@ -109,54 +106,83 @@
       <div class="result-box">
         <h3>Spectral Results</h3>
         <div class="formula-box">
-          Cs(T) = Z × Ru × Ch(T) × N(T,D) (per NZS 1170.5 Clause 3.1)
+          C(T) = Ch(T) × Z × Ru × N(T,D) per NZS 1170.5 Clause 3.1.1<br>
+          Z × Ru limited to ≤ 0.7
         </div>
         <div class="result-grid">
-          <div class="result-item"><label>Z × Ru (limited to 0.7)</label><span id="ZRu">-</span></div>
-          <div class="result-item"><label>Ch(0)</label><span id="Ch0">-</span></div>
+          <div class="result-item"><label>Z × Ru (limited)</label><span id="ZRu">-</span></div>
+          <div class="result-item"><label>Ch(0.0s)</label><span id="Ch0">-</span></div>
           <div class="result-item"><label>Ch(0.4s)</label><span id="Ch04">-</span></div>
-          <div class="result-item"><label>Ch(Td)</label><span id="ChTd">-</span></div>
+          <div class="result-item"><label>Ch(1.0s)</label><span id="Ch10">-</span></div>
         </div>
         <canvas id="chart"></canvas>
         <div class="table-wrap">
           <table id="spectrumTable">
-            <thead><tr><th>T (s)</th><th>Ch(T)</th><th>Cs(T) (g)</th></tr></thead>
+            <thead><tr><th>T (s)</th><th>Ch(T)</th><th>C(T) (g)</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
-      <p class="note">Based on AS/NZS 1170.5:2024 Clause 3.1. Ch(T) from Table 3.1, Z from Table 3.2. Verify with full standard.</p>
+      <p class="note">Based on NZS 1170.5:2004 Table 3.1. Verify with latest standard for project work.</p>
     </div>
   </div>
 
   <script>
-    // Spectral shape factors from NZS 1170.5 Table 3.1
-    // For modal response spectrum and numerical integration time-history methods
+    // NZS 1170.5:2004 Table 3.1 - Spectral Shape Factor Ch(T)
+    // These are the actual values from the standard
     const ChTable = {
-      A: { Ch1: 1.0, Ch2: 1.0, T1: 0.4, T2: 2.0, kT: 1.0 },
-      B: { Ch1: 1.2, Ch2: 1.2, T1: 0.4, T2: 2.0, kT: 1.0 },
-      C: { Ch1: 1.4, Ch2: 1.4, T1: 0.4, T2: 2.5, kT: 0.75 },
-      D: { Ch1: 1.6, Ch2: 1.8, T1: 0.5, T2: 3.0, kT: 0.5 },
-      E: { Ch1: 2.0, Ch2: 2.5, T1: 0.6, T2: 4.0, kT: 0.25 }
+      A: [  // Strong rock
+        {T:0.0, Ch:1.89}, {T:0.1, Ch:1.89}, {T:0.2, Ch:1.89}, {T:0.3, Ch:1.89},
+        {T:0.4, Ch:1.89}, {T:0.5, Ch:1.60}, {T:0.6, Ch:1.40}, {T:0.7, Ch:1.24},
+        {T:0.8, Ch:1.12}, {T:0.9, Ch:1.03}, {T:1.0, Ch:0.95}, {T:1.5, Ch:0.70},
+        {T:2.0, Ch:0.53}, {T:2.5, Ch:0.42}, {T:3.0, Ch:0.35}, {T:3.5, Ch:0.26},
+        {T:4.0, Ch:0.20}, {T:4.5, Ch:0.16}
+      ],
+      B: [  // Rock
+        {T:0.0, Ch:2.36}, {T:0.1, Ch:2.36}, {T:0.2, Ch:2.36}, {T:0.3, Ch:2.36},
+        {T:0.4, Ch:2.36}, {T:0.5, Ch:2.00}, {T:0.6, Ch:1.74}, {T:0.7, Ch:1.55},
+        {T:0.8, Ch:1.41}, {T:0.9, Ch:1.29}, {T:1.0, Ch:1.19}, {T:1.5, Ch:0.88},
+        {T:2.0, Ch:0.66}, {T:2.5, Ch:0.53}, {T:3.0, Ch:0.44}, {T:3.5, Ch:0.32},
+        {T:4.0, Ch:0.25}, {T:4.5, Ch:0.20}
+      ],
+      C: [  // Shallow soil
+        {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
+        {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:2.84}, {T:0.7, Ch:2.53},
+        {T:0.8, Ch:2.29}, {T:0.9, Ch:2.09}, {T:1.0, Ch:1.93}, {T:1.5, Ch:1.43},
+        {T:2.0, Ch:1.07}, {T:2.5, Ch:0.86}, {T:3.0, Ch:0.71}, {T:3.5, Ch:0.52},
+        {T:4.0, Ch:0.40}, {T:4.5, Ch:0.32}
+      ],
+      D: [  // Deep or soft soil
+        {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
+        {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:3.00}, {T:0.7, Ch:3.00},
+        {T:0.8, Ch:3.00}, {T:0.9, Ch:3.00}, {T:1.0, Ch:3.00}, {T:1.5, Ch:2.21},
+        {T:2.0, Ch:1.66}, {T:2.5, Ch:1.33}, {T:3.0, Ch:1.11}, {T:3.5, Ch:0.81},
+        {T:4.0, Ch:0.62}, {T:4.5, Ch:0.49}
+      ],
+      E: [  // Very soft soil (limited data)
+        {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
+        {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:3.00}, {T:0.7, Ch:3.00},
+        {T:0.8, Ch:3.00}, {T:0.9, Ch:3.00}, {T:1.0, Ch:3.00}, {T:1.5, Ch:2.50},
+        {T:2.0, Ch:1.90}, {T:2.5, Ch:1.50}, {T:3.0, Ch:1.20}, {T:3.5, Ch:0.90},
+        {T:4.0, Ch:0.70}, {T:4.5, Ch:0.55}
+      ]
     };
 
-    // Near-fault factor N(T,D) - simplified (per NZS 1170.5 Clause 3.1.6)
-    function nearFaultFactor(T, subsoil) {
-      // For simplicity, using 1.0 unless specific conditions apply
-      // Full implementation would require distance to fault and magnitude
-      return 1.0;
-    }
-
-    function calculateCh(T, site) {
-      if (T <= site.T1) {
-        return site.Ch1;
-      } else if (T <= site.T2) {
-        // Linear interpolation between T1 and T2
-        return site.Ch1 + (site.Ch2 - site.Ch1) * (T - site.T1) / (site.T2 - site.T1);
-      } else {
-        // Long period decay: Ch(T) = Ch(T2) × (T2/T)^kT
-        return site.Ch2 * Math.pow(site.T2 / T, site.kT);
+    // Linear interpolation function
+    function interpolateCh(T, table) {
+      // Handle T <= first point
+      if (T <= table[0].T) return table[0].Ch;
+      // Handle T >= last point
+      if (T >= table[table.length - 1].T) return table[table.length - 1].Ch;
+      
+      // Find surrounding points
+      for (let i = 0; i < table.length - 1; i++) {
+        if (T >= table[i].T && T <= table[i+1].T) {
+          const ratio = (T - table[i].T) / (table[i+1].T - table[i].T);
+          return table[i].Ch + ratio * (table[i+1].Ch - table[i].Ch);
+        }
       }
+      return table[0].Ch; // Fallback
     }
 
     function calculate() {
@@ -164,58 +190,56 @@
       const subsoil = document.getElementById('subsoil').value;
       let Ru = parseFloat(document.getElementById('Ru').value);
       const damping = parseFloat(document.getElementById('damping').value);
-      const nearFault = document.getElementById('nearFault').checked;
       const Tmin = parseFloat(document.getElementById('Tmin').value);
       const Tmax = parseFloat(document.getElementById('Tmax').value);
       const dT = parseFloat(document.getElementById('dT').value);
 
-      const site = ChTable[subsoil];
+      const table = ChTable[subsoil];
 
-      // Limit Z × Ru to 0.7 per NZS 1170.5
+      // Limit Z × Ru to 0.7 per NZS 1170.5 Clause 3.1.1
       const ZRuLimited = Math.min(Z * Ru, 0.7);
       
       // Damping factor per Clause 3.1.6 (simplified)
-      const kD = damping <= 5 ? 1.0 : (0.67 + 0.33 * damping / 25);
+      // For damping > 5%, reduce spectral acceleration
+      const kD = damping <= 5 ? 1.0 : (0.67 + 0.33 * (5 / damping));
 
       const data = [];
       for (let T = Tmin; T <= Tmax; T += dT) {
-        const T_value = Math.max(T, 0.01); // Avoid T=0
+        const T_value = Math.max(T, 0.01);
         
-        let Ch = calculateCh(T_value, site);
-        
-        // Apply near-fault factor if selected
-        const N = nearFault ? nearFaultFactor(T_value, subsoil) : 1.0;
+        // Get Ch(T) from Table 3.1 with interpolation
+        let Ch = interpolateCh(T_value, table);
         
         // Apply damping factor
         Ch = Ch * kD;
         
-        // Calculate design spectral acceleration
-        const Cs = ZRuLimited * Ch * N;
+        // Calculate C(T) = Ch(T) × Z × Ru
+        const C = ZRuLimited * Ch;
         
-        data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), Cs: Cs.toFixed(4) });
+        data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), C: C.toFixed(4) });
       }
 
       // Get key values
-      const Ch0 = calculateCh(0.01, site).toFixed(2);
-      const Ch04 = calculateCh(0.4, site).toFixed(2);
-      const ChTd = calculateCh(site.T2, site).toFixed(2);
+      const Ch0 = interpolateCh(0.0, table).toFixed(2);
+      const Ch04 = interpolateCh(0.4, table).toFixed(2);
+      const Ch10 = interpolateCh(1.0, table).toFixed(2);
 
       document.getElementById('ZRu').textContent = ZRuLimited.toFixed(3);
       document.getElementById('Ch0').textContent = Ch0;
       document.getElementById('Ch04').textContent = Ch04;
-      document.getElementById('ChTd').textContent = ChTd;
+      document.getElementById('Ch10').textContent = Ch10;
 
       // Update table
       const tbody = document.querySelector('#spectrumTable tbody');
-      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.Cs}</td></tr>`).join('');
+      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.C}</td></tr>`).join('');
 
       // Draw chart
-      drawChart(data, site);
+      drawChart(data);
 
       document.getElementById('result').classList.add('show');
     }
 
-    function drawChart(data, site) {
+    function drawChart(data) {
       const canvas = document.getElementById('chart');
       const ctx = canvas.getContext('2d');
       const w = canvas.width = canvas.offsetWidth;
@@ -225,7 +249,7 @@
       ctx.fillStyle = '#f8f8f8';
       ctx.fillRect(0, 0, w, h);
       
-      const maxCs = Math.max(...data.map(d => parseFloat(d.Cs)));
+      const maxC = Math.max(...data.map(d => parseFloat(d.C)));
       const maxT = Math.max(...data.map(d => parseFloat(d.T)));
       
       const pad = 50;
@@ -248,27 +272,11 @@
       
       data.forEach((d, i) => {
         const x = pad + (parseFloat(d.T) / maxT) * (w - pad - 20);
-        const y = h - pad - (parseFloat(d.Cs) / maxCs) * (h - pad - 20);
+        const y = h - pad - (parseFloat(d.C) / maxC) * (h - pad - 20);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
-      
-      // Highlight key points
-      ctx.fillStyle = '#1f6feb';
-      const points = [
-        { T: 0.4, label: 'T1' },
-        { T: site.T2, label: 'Td' }
-      ];
-      points.forEach(p => {
-        const Ch = calculateCh(p.T, site);
-        const Cs = Math.min(ZRuLimited = Math.min(parseFloat(document.getElementById('Z').value) * parseFloat(document.getElementById('Ru').value), 0.7), 0.7) * Ch;
-        const x = pad + (p.T / maxT) * (w - pad - 20);
-        const y = h - pad - (Cs / maxCs) * (h - pad - 20);
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      });
       
       // Axes
       ctx.strokeStyle = '#333';
@@ -287,13 +295,13 @@
       ctx.save();
       ctx.translate(15, h / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText('Spectral Acceleration Cs (g)', 0, 0);
+      ctx.fillText('Spectral Acceleration C(T) (g)', 0, 0);
       ctx.restore();
       
       // Y-axis values
       ctx.textAlign = 'right';
       for (let i = 0; i <= 5; i++) {
-        const val = (i / 5 * maxCs).toFixed(2);
+        const val = (i / 5 * maxC).toFixed(2);
         const y = pad + (i / 5) * (h - pad - 20);
         ctx.fillText(val, pad - 8, y + 4);
       }

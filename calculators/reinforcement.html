@@ -169,18 +169,13 @@
       const bd = bw * d;
       const rho = As / bd * 100;
 
-      // Minimum per Clause 7.6.1 (Eq 7-1)
+      // Minimum per Clause 7.6.1 (Eq 7-1) and Clause 9.3.2
       const sqrtFc = Math.sqrt(fc);
-      let minAs1 = 0.25 * sqrtFc / fy * bd;
+      const minAsEq71 = 0.25 * sqrtFc / fy * bd;  // Eq 7-1
+      const minAs018 = 0.0018 * bd;  // Clause 9.3.2 minimum (0.18%)
       
-      // Alternative min for f'c < 30 MPa: max(1.33As, 1.4bw·d/fy)
-      let minAs2 = 0;
-      if (fc < 30) {
-        const alt1 = 1.4 * bd / fy;
-        minAs2 = Math.max(1.33 * 0.5 * bw * d * fy / Math.sqrt(fc), alt1); // approx As,req as half balance
-      }
-      
-      const minAs = Math.max(minAs1, minAs2, 0.0018 * bd); // also check 0.18%
+      // Use the greater of Eq 7-1 and 0.18%
+      const minAs = Math.max(minAsEq71, minAs018);
       
       // Maximum per Clause 7.6.2 (Eq 7-8)
       const beta1 = fc >= 30 ? 0.85 - 0.05 * (fc - 30) / 7 : 0.85;

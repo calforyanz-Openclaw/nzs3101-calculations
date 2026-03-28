@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NZS1170.5 Response Spectrum Input (Offline Editable)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 980px; }
+    h1 { margin-bottom: 6px; }
+    .note { color: #555; margin-bottom: 18px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
+    th { background: #f5f5f5; text-align: left; }
+    input, textarea, select { width: 100%; box-sizing: border-box; padding: 6px; }
+    textarea { min-height: 72px; }
+  </style>
+</head>
+<body>
+  <h1>NZS 1170.5 Response Spectrum – Offline Editable Input Sheet</h1>
+  <div class="note">
+    Fill values directly in this page, then send back the edited file or copy values to chat.
+  </div>
+
+  <table>
+    <tr><th style="width:32%">Parameter</th><th style="width:38%">Value</th><th>Notes</th></tr>
+    <tr><td>Project / Job Name</td><td><input /></td><td></td></tr>
+    <tr><td>Location</td><td><input /></td><td></td></tr>
+    <tr><td>Hazard Factor Z</td><td><input /></td><td></td></tr>
+    <tr><td>Site Class</td><td><select><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></td><td></td></tr>
+    <tr><td>Return Period Factor (ULS)</td><td><input /></td><td></td></tr>
+    <tr><td>Return Period Factor (SLS)</td><td><input /></td><td></td></tr>
+    <tr><td>Near-fault Factor</td><td><input /></td><td>If applicable</td></tr>
+    <tr><td>Damping Ratio (%)</td><td><input value="5" /></td><td>Default 5%</td></tr>
+    <tr><td>Target Period T (s)</td><td><input /></td><td>Single-point check if needed</td></tr>
+    <tr><td>Period Range Tmin (s)</td><td><input value="0.0" /></td><td></td></tr>
+    <tr><td>Period Range Tmax (s)</td><td><input value="4.0" /></td><td></td></tr>
+    <tr><td>Period Step dT (s)</td><td><input value="0.01" /></td><td></td></tr>
+    <tr><td>Assumptions / Notes</td><td><textarea></textarea></td><td></td></tr>
+  </table>
+</body>
+</html>

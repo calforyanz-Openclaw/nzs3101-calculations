@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZS 3101 Reinforcement Limits Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #5b6474;
+      --highlight: #d4a017;
+      --paper: #f8f3ea;
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 22px 60px rgba(15, 23, 42, 0.2);
+      --accent: #0f766e;
+      --danger: #b42318;
+      --pass: #16a34a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: radial-gradient(circle at 15% 15%, rgba(255,255,255,0.9), transparent 55%),
+                  radial-gradient(circle at 80% 20%, rgba(212,160,23,0.25), transparent 45%),
+                  linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 45%, #c7b098 100%);
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--ink);
+      padding: 3.5rem 1.5rem 4rem;
+    }
+    .shell { width: min(1080px, 100%); margin: 0 auto; display: grid; gap: 2rem; }
+    header { display: grid; gap: 0.6rem; }
+    h1 { font-family: "Fraunces", "Times New Roman", serif; font-size: clamp(2rem,4vw,3rem); margin: 0; }
+    header p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; }
+    .card { background: var(--card); border-radius: 18px; padding: 1.6rem; box-shadow: var(--shadow); backdrop-filter: blur(16px); border: 1px solid rgba(15,118,110,0.12); }
+    .card h2 { margin: 0 0 1.1rem; font-size: 1.1rem; text-transform: uppercase; color: var(--accent); letter-spacing: 0.04em; }
+    .field { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+    label { font-size: 0.92rem; color: var(--muted); }
+    input, select { width: 100%; padding: 0.65rem 0.75rem; border-radius: 10px; border: 1px solid rgba(15,23,42,0.15); font-size: 0.95rem; background: #fff; outline: none; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+    .pill { background: #0f172a; color: #f8fafc; padding: 0.65rem 0.85rem; border-radius: 999px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .value-grid { display: grid; gap: 0.75rem; }
+    .value-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(15,23,42,0.12); padding-bottom: 0.4rem; }
+    .value-row span { color: var(--muted); font-size: 0.92rem; }
+    .value-row strong { font-size: 1.05rem; }
+    .status { padding: 0.7rem 0.9rem; border-radius: 12px; font-weight: 600; }
+    .status.pass { background: rgba(22,163,74,0.12); color: var(--pass); }
+    .status.fail { background: rgba(180,35,24,0.12); color: var(--danger); }
+    .status.warn { background: rgba(212,160,23,0.2); color: #b45309; }
+    .notes { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .toggle-btn { border: none; background: var(--accent); color: #f8fafc; padding: 0.7rem 1.1rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 24px rgba(15,118,110,0.25); }
+    .toggle-btn:hover { transform: translateY(-2px); }
+    .details { display: none; border-top: 1px dashed rgba(15,23,42,0.15); padding-top: 1rem; margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .details.open { display: block; }
+    @media (max-width: 720px) { body { padding: 2.5rem 1.1rem 3rem; } .card { padding: 1.3rem; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>NZS 3101 Min/Max Reinforcement</h1>
+      <p>Based on NZS 3101:2006 Clauses 7.6.1 (minimum), 7.6.2 (maximum), 9.3.2. Check reinforcement limits for beams and slabs.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Materials & Geometry</h2>
+        <div class="field">
+          <label for="fc">Concrete strength f'c (MPa)</label>
+          <input id="fc" type="number" value="30" min="10" step="0.5">
+        </div>
+        <div class="field">
+          <label for="fy">Steel yield strength fy (MPa)</label>
+          <input id="fy" type="number" value="500" min="250" step="10">
+        </div>
+        <div class="field">
+          <label for="bw">Web width bw (mm)</label>
+          <input id="bw" type="number" value="300" min="100" step="10">
+        </div>
+        <div class="field">
+          <label for="h">Total depth h (mm)</label>
+          <input id="h" type="number" value="600" min="150" step="10">
+        </div>
+        <div class="field">
+          <label for="cover">Effective cover c (mm)</label>
+          <input id="cover" type="number" value="40" min="20" step="5">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Reinforcement</h2>
+        <div class="field">
+          <label for="As">Tension steel area As (mm²)</label>
+          <input id="As" type="number" value="1800" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="AsPrime">Compression steel As' (mm²)</label>
+          <input id="AsPrime" type="number" value="0" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="tensionControlled">Tension-controlled section?</label>
+          <select id="tensionControlled">
+            <option value="yes">Yes (εt ≥ 0.005)</option>
+            <option value="no">No (compression-controlled)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card result">
+        <h2>Results</h2>
+        <div class="pill">Reinforcement limits check</div>
+        <div class="value-grid">
+          <div class="value-row"><span>Effective depth d</span><strong id="d">-</strong></div>
+          <div class="value-row"><span>Min As (Clause 7.6.1)</span><strong id="minAs">-</strong></div>
+          <div class="value-row"><span>Current As</span><strong id="curAs">-</strong></div>
+          <div class="value-row"><span>Min check</span><strong id="minCheck">-</strong></div>
+          <div class="value-row"><span>Max As (Clause 7.6.2)</span><strong id="maxAs">-</strong></div>
+          <div class="value-row"><span>Max check</span><strong id="maxCheck">-</strong></div>
+          <div class="value-row"><span>Current ρ</span><strong id="rho">-</strong></div>
+          <div class="value-row"><span>Min ρ</span><strong id="rhoMin">-</strong></div>
+          <div class="value-row"><span>Max ρ</span><strong id="rhoMax">-</strong></div>
+        </div>
+        <div id="status" class="status pass">Enter values and compute</div>
+        <button class="toggle-btn" type="button" onclick="calculate()">Calculate</button>
+        <button class="toggle-btn" type="button" style="background:#64748b;margin-left:0.5rem" onclick="showDetails()">Details</button>
+        <div id="detailPanel" class="details">
+          <div id="detailText">-</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Formulas</h2>
+        <div class="notes">
+          <strong>Minimum (Clause 7.6.1):</strong><br>
+          As,min = (0.25√f'c / fy) · bw · d  <br>
+          ≥ 1.33·As,req or 1.4·bw·d/fy (for f'c &lt; 30 MPa)<br><br>
+          <strong>Maximum (Clause 7.6.2):</strong><br>
+          ρmax = 0.75 ρb (tension-controlled)<br>
+          ρb = β1·0.85·f'c/fy · (600/(600+fy))<br>
+          β1 = 0.85 - 0.05(f'c-30)/7 (≥ 0.65)
+        </div>
+      </div>
+      <div class="card">
+        <h2>Notes</h2>
+        <div class="notes">
+          Minimum applies to beams and one-way slabs.<br>
+          For two-way slabs, use 0.002bw·d minimum.<br>
+          Maximum 75% of balance for tension-controlled.<br>
+          Results are for quick checks; verify with full design.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function calculate() {
+      const fc = parseFloat(document.getElementById('fc').value);
+      const fy = parseFloat(document.getElementById('fy').value);
+      const bw = parseFloat(document.getElementById('bw').value);
+      const h = parseFloat(document.getElementById('h').value);
+      const cover = parseFloat(document.getElementById('cover').value);
+      const As = parseFloat(document.getElementById('As').value);
+      const AsPrime = parseFloat(document.getElementById('AsPrime').value);
+      const isTensionControlled = document.getElementById('tensionControlled').value === 'yes';
+
+      const d = h - cover;
+      const bd = bw * d;
+      const rho = As / bd * 100;
+
+      // Minimum per Clause 7.6.1 (Eq 7-1)
+      const sqrtFc = Math.sqrt(fc);
+      let minAs1 = 0.25 * sqrtFc / fy * bd;
+      
+      // Alternative min for f'c < 30 MPa: max(1.33As, 1.4bw·d/fy)
+      let minAs2 = 0;
+      if (fc < 30) {
+        const alt1 = 1.4 * bd / fy;
+        minAs2 = Math.max(1.33 * 0.5 * bw * d * fy / Math.sqrt(fc), alt1); // approx As,req as half balance
+      }
+      
+      const minAs = Math.max(minAs1, minAs2, 0.0018 * bd); // also check 0.18%
+      
+      // Maximum per Clause 7.6.2 (Eq 7-8)
+      const beta1 = fc >= 30 ? 0.85 - 0.05 * (fc - 30) / 7 : 0.85;
+      const rhoB = beta1 * 0.85 * fc / fy * (600 / (600 + fy));
+      const maxAs = isTensionControlled ? 0.75 * rhoB * bd : rhoB * bd;
+      
+      const minCheck = As >= minAs ? 'PASS' : 'FAIL';
+      const maxCheck = As <= maxAs ? 'PASS' : 'FAIL';
+      const rhoMin = minAs / bd * 100;
+      const rhoMax = maxAs / bd * 100;
+
+      document.getElementById('d').textContent = d + ' mm';
+      document.getElementById('minAs').textContent = minAs.toFixed(0) + ' mm²';
+      document.getElementById('curAs').textContent = As + ' mm²';
+      document.getElementById('minCheck').textContent = minCheck;
+      document.getElementById('maxAs').textContent = maxAs.toFixed(0) + ' mm²';
+      document.getElementById('maxCheck').textContent = maxCheck;
+      document.getElementById('rho').textContent = rho.toFixed(2) + '%';
+      document.getElementById('rhoMin').textContent = rhoMin.toFixed(3) + '%';
+      document.getElementById('rhoMax').textContent = rhoMax.toFixed(2) + '%';
+
+      const status = document.getElementById('status');
+      if (minCheck === 'FAIL') {
+        status.textContent = 'FAIL: Increase tension steel';
+        status.className = 'status fail';
+      } else if (maxCheck === 'FAIL') {
+        status.textContent = 'FAIL: Reduce tension steel or add compression steel';
+        status.className = 'status fail';
+      } else {
+        status.textContent = 'PASS: Reinforcement within limits';
+        status.className = 'status pass';
+      }
+
+      const detail = `Step-by-step:
+1. d = h - c = ${h} - ${cover} = ${d} mm
+2. bw×d = ${bw} × ${d} = ${bd} mm²
+3. ρ = As/bw×d = ${As}/${bd} = ${rho.toFixed(3)}%
+4. Min As (Eq 7-1): 0.25√f'c/fy × bw×d = ${minAs.toFixed(0)} mm²
+5. β1 = ${beta1.toFixed(2)} (Clause 7.4.3)
+6. ρb = ${rhoB.toFixed(4)}
+7. Max As = 0.75ρb × bw×d = ${maxAs.toFixed(0)} mm²
+8. Min check: ${As} ≥ ${minAs.toFixed(0)} → ${minCheck}
+9. Max check: ${As} ≤ ${maxAs.toFixed(0)} → ${maxCheck}`;
+      document.getElementById('detailText').textContent = detail;
+    }
+
+    function showDetails() {
+      document.getElementById('detailPanel').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

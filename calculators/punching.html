@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZS 3101 Punching Shear Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #5b6474;
+      --highlight: #d4a017;
+      --paper: #f8f3ea;
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 22px 60px rgba(15, 23, 42, 0.2);
+      --accent: #0f766e;
+      --danger: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: radial-gradient(circle at 15% 15%, rgba(255,255,255,0.9), transparent 55%),
+                  radial-gradient(circle at 80% 20%, rgba(212,160,23,0.25), transparent 45%),
+                  linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 45%, #c7b098 100%);
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--ink);
+      padding: 3.5rem 1.5rem 4rem;
+    }
+    .shell { width: min(1080px, 100%); margin: 0 auto; display: grid; gap: 2rem; }
+    header { display: grid; gap: 0.6rem; }
+    h1 { font-family: "Fraunces", "Times New Roman", serif; font-size: clamp(2rem,4vw,3rem); margin: 0; }
+    header p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; }
+    .card { background: var(--card); border-radius: 18px; padding: 1.6rem; box-shadow: var(--shadow); backdrop-filter: blur(16px); border: 1px solid rgba(15,118,110,0.12); }
+    .card h2 { margin: 0 0 1.1rem; font-size: 1.1rem; text-transform: uppercase; color: var(--accent); letter-spacing: 0.04em; }
+    .field { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+    label { font-size: 0.92rem; color: var(--muted); }
+    input, select { width: 100%; padding: 0.65rem 0.75rem; border-radius: 10px; border: 1px solid rgba(15,23,42,0.15); font-size: 0.95rem; background: #fff; outline: none; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+    .pill { background: #0f172a; color: #f8fafc; padding: 0.65rem 0.85rem; border-radius: 999px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .value-grid { display: grid; gap: 0.75rem; }
+    .value-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(15,23,42,0.12); padding-bottom: 0.4rem; }
+    .value-row span { color: var(--muted); font-size: 0.92rem; }
+    .value-row strong { font-size: 1.05rem; }
+    .status { padding: 0.7rem 0.9rem; border-radius: 12px; background: rgba(15,118,110,0.12); color: var(--accent); font-weight: 600; }
+    .status.danger { background: rgba(180,35,24,0.12); color: var(--danger); }
+    .notes { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .toggle-btn { border: none; background: var(--accent); color: #f8fafc; padding: 0.7rem 1.1rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 24px rgba(15,118,110,0.25); }
+    .toggle-btn:hover { transform: translateY(-2px); }
+    .details { display: none; border-top: 1px dashed rgba(15,23,42,0.15); padding-top: 1rem; margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .details.open { display: block; }
+    @media (max-width: 720px) { body { padding: 2.5rem 1.1rem 3rem; } .card { padding: 1.3rem; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>NZS 3101 Punching Shear</h1>
+      <p>Based on NZS 3101:2006 Clauses 7.10 and 11.5. Calculate punching shear capacity for slab-column connections.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Materials & Slab</h2>
+        <div class="field">
+          <label for="fc">Concrete strength f'c (MPa)</label>
+          <input id="fc" type="number" value="30" min="10" step="0.5">
+        </div>
+        <div class="field">
+          <label for="h">Slab thickness h (mm)</label>
+          <input id="h" type="number" value="200" min="100" step="10">
+        </div>
+        <div class="field">
+          <label for="cover">Effective cover c (mm)</label>
+          <input id="cover" type="number" value="25" min="15" step="5">
+        </div>
+        <div class="field">
+          <label for="d">Effective depth d (mm)</label>
+          <input id="d" type="number" value="175" min="50" step="5">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Column</h2>
+        <div class="field">
+          <label for="c1">Column dimension c1 (mm)</label>
+          <input id="c1" type="number" value="300" min="100" step="10">
+        </div>
+        <div class="field">
+          <label for="c2">Column dimension c2 (mm)</label>
+          <input id="c2" type="number" value="300" min="100" step="10">
+        </div>
+        <div class="field">
+          <label for="V">Applied shear V (kN)</label>
+          <input id="V" type="number" value="150" min="0" step="5">
+        </div>
+        <div class="field">
+          <label for="gamma">Moment transfer factor γ</label>
+          <input id="gamma" type="number" value="0.4" min="0" max="1" step="0.05">
+        </div>
+      </div>
+
+      <div class="card result">
+        <h2>Results</h2>
+        <div class="pill">Punching shear capacity</div>
+        <div class="value-grid">
+          <div class="value-row"><span>Perimeter bo</span><strong id="bo">-</strong></div>
+          <div class="value-row"><span>Critical section Ao</span><strong id="Ao">-</strong></div>
+          <div class="value-row"><span>vc (MPa)</span><strong id="vc">-</strong></div>
+          <div class="value-row"><span>Vc capacity (kN)</span><strong id="Vc">-</strong></div>
+          <div class="value-row"><span>Applied v (MPa)</span><strong id="vApplied">-</strong></div>
+          <div class="value-row"><span>Utilisation</span><strong id="util">-</strong></div>
+        </div>
+        <div id="status" class="status">Enter values and compute</div>
+        <button class="toggle-btn" type="button" onclick="calculate()">Calculate</button>
+        <button class="toggle-btn" type="button" style="background:#64748b;margin-left:0.5rem" onclick="showDetails()">Details</button>
+        <div id="detailPanel" class="details">
+          <div id="detailText">-</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Formulas (Clause 11.5)</h2>
+        <div class="notes">
+          v<sub>c</sub> = min(0.17(1+2/βc)√f'c, 0.34√f'c)<br>
+          βc = longer/shorter column side<br>
+          bo = 4(c1 + d) for interior column<br>
+          Vc = vc · bo · d
+        </div>
+      </div>
+      <div class="card">
+        <h2>Notes</h2>
+        <div class="notes">
+          Assumes interior column (critical section at d/2).<br>
+          For edge/corner columns, adjust bo per Clause 11.5.<br>
+          Results are for quick checks; verify with full design.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function calculate() {
+      const fc = parseFloat(document.getElementById('fc').value);
+      const h = parseFloat(document.getElementById('h').value);
+      const cover = parseFloat(document.getElementById('cover').value);
+      const d = parseFloat(document.getElementById('d').value);
+      const c1 = parseFloat(document.getElementById('c1').value);
+      const c2 = parseFloat(document.getElementById('c2').value);
+      const V = parseFloat(document.getElementById('V').value);
+      const gamma = parseFloat(document.getElementById('gamma').value);
+
+      const betaC = Math.max(c1, c2) / Math.min(c1, c2);
+      const sqrtFc = Math.sqrt(fc);
+      
+      const vc1 = 0.17 * (1 + 2/betaC) * sqrtFc;
+      const vc2 = 0.34 * sqrtFc;
+      const vc = Math.min(vc1, vc2);
+      
+      const bo = 4 * (c1 + d);
+      const Ao = bo * d;
+      const Vc = vc * Ao / 1000;
+      
+      const vApplied = V * 1000 / Ao;
+      const util = (vApplied / vc) * 100;
+
+      document.getElementById('bo').textContent = bo + ' mm';
+      document.getElementById('Ao').textContent = (Ao/1e6).toFixed(4) + ' m²';
+      document.getElementById('vc').textContent = vc.toFixed(2) + ' MPa';
+      document.getElementById('Vc').textContent = Vc.toFixed(1) + ' kN';
+      document.getElementById('vApplied').textContent = vApplied.toFixed(2) + ' MPa';
+      document.getElementById('util').textContent = util.toFixed(1) + '%';
+
+      const status = document.getElementById('status');
+      if (vApplied <= vc) {
+        status.textContent = 'PASS - Capacity adequate';
+        status.className = 'status';
+      } else {
+        status.textContent = 'FAIL - Increase slab thickness or reinforcement';
+        status.className = 'status danger';
+      }
+
+      const detail = `Step-by-step:
+1. βc = max(c1,c2)/min(c1,c2) = ${betaC.toFixed(2)}
+2. vc1 = 0.17(1+2/βc)√f'c = ${vc1.toFixed(2)} MPa
+3. vc2 = 0.34√f'c = ${vc2.toFixed(2)} MPa
+4. vc = min(vc1, vc2) = ${vc.toFixed(2)} MPa
+5. bo = 4(c1+d) = ${bo} mm
+6. Ao = bo × d = ${Ao.toFixed(0)} mm²
+7. Vc = vc × Ao = ${Vc.toFixed(1)} kN
+8. v_applied = V/Ao = ${vApplied.toFixed(2)} MPa
+9. Utilisation = ${util.toFixed(1)}%`;
+      document.getElementById('detailText').textContent = detail;
+    }
+
+    function showDetails() {
+      document.getElementById('detailPanel').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html><html lang="en"><head><title>Concrete Shear Capacity Calculator - Calforya - Structural Engineering Calculations</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta property="og:title" content="Concrete Shear Capacity Calculator - Calforya - Structural Engineering Calculations" /><meta property="og:type" content="website" /><meta property="og:locale" content="en" /><meta property="og:url" content="https://calforya.com/concrete-shear-capacity-calculator" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="icon" href="data:," /><link rel="preconnect" href="" /><link rel="stylesheet" type="text/css" media="screen" href="/webcard/static/app.min.1768398951.css"/><link rel="stylesheet" type="text/css" media="screen" href="/css/custom.251101052247.css" id="customcss"/><link rel="canonical" href="https://calforya.com/concrete-shear-capacity-calculator"/><script>if (!webcard) var webcard={};webcard.id=2288008;webcard.moduleId=23589355;webcard.culture="en";webcard.type=2;webcard.isEdit=false;webcard.isPreview=true;webcard.isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);webcard.isTouch='ontouchstart' in window || navigator.msMaxTouchPoints > 0;webcard.googleMapsEmbedApiKey='AIzaSyDoOLq_ts27g3vEog9sGYB0GJSyWBDK9gs';webcard.googleMapsApiKey='';webcard.apiHost=location.host + '/api.php';var extraPath='';</script><link rel="preload" as="style" href="/g/fonts.css?family=Open+Sans:400%7CRoboto:400,700&amp;display=swap" /><link rel="stylesheet" media="print" onload="this.media='all'" href="/g/fonts.css?family=Open+Sans:400%7CRoboto:400,700&amp;display=swap" /><style>figure{margin:0}:root {      --ink: #0f172a;      --muted: #5b6474;      --highlight: #d4a017;      --paper: #f8f3ea;      --card: rgba(255, 255, 255, 0.82);      --shadow: 0 22px 60px rgba(15, 23, 42, 0.2);      --accent: #0f766e;      --danger: #b42318;      font-family: "Space Grotesk", "Segoe UI", sans-serif;      color: var(--ink);      background-color: #f0e6d8;    }    * {      box-sizing: border-box;    }    body {      margin: 0;      min-height: 100vh;      background:        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.9), transparent 55%),        radial-gradient(circle at 80% 20%, rgba(212, 160, 23, 0.25), transparent 45%),        linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 45%, #c7b098 100%);      display: flex;      justify-content: center;      padding: 3.5rem 1.5rem 4rem;    }    .shell {      width: min(1080px, 100%);      display: grid;      gap: 2rem;    }    header {      display: grid;      gap: 0.6rem;    }    h1 {      font-family: "Fraunces", "Times New Roman", serif;      font-size: clamp(2rem, 4vw, 3.1rem);      margin: 0;      letter-spacing: 0.02em;    }    header p {      margin: 0;      color: var(--muted);      font-size: 1.02rem;      max-width: 52rem;    }    .grid {      display: grid;      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));      gap: 1.5rem;    }    .card {      background: var(--card);      border-radius: 18px;      padding: 1.6rem;      box-shadow: var(--shadow);      backdrop-filter: blur(16px);      border: 1px solid rgba(15, 118, 110, 0.12);      animation: rise 0.6s ease both;    }    .card h2 {      margin: 0 0 1.1rem;      font-size: 1.2rem;      letter-spacing: 0.04em;      text-transform: uppercase;      color: var(--accent);    }    .field {      display: grid;      gap: 0.4rem;      margin-bottom: 1rem;    }    label {      font-size: 0.92rem;      color: var(--muted);    }    input,    select {      width: 100%;      padding: 0.65rem 0.75rem;      border-radius: 10px;      border: 1px solid rgba(15, 23, 42, 0.15);      font-size: 0.98rem;      background: #fff;      color: var(--ink);      outline: none;    }    input:focus {      border-color: var(--accent);      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);    }    .result {      display: grid;      gap: 1rem;    }    .pill {      background: #0f172a;      color: #f8fafc;      padding: 0.65rem 0.85rem;      border-radius: 999px;      font-size: 0.9rem;      display: inline-flex;      align-items: center;      gap: 0.4rem;    }    .value-grid {      display: grid;      gap: 0.75rem;    }    .value-row {      display: flex;      justify-content: space-between;      align-items: baseline;      border-bottom: 1px dashed rgba(15, 23, 42, 0.12);      padding-bottom: 0.4rem;      gap: 0.8rem;    }    .value-row span {      color: var(--muted);      font-size: 0.92rem;    }    .value-row strong {      font-size: 1.05rem;    }    .status {      padding: 0.7rem 0.9rem;      border-radius: 12px;      background: rgba(15, 118, 110, 0.12);      color: var(--accent);      font-weight: 600;    }    .status.danger {      background: rgba(180, 35, 24, 0.12);      color: var(--danger);    }    .notes {      font-size: 0.88rem;      color: var(--muted);      line-height: 1.5;    }    .formulas {      font-size: 0.88rem;      color: var(--muted);      line-height: 1.6;    }    .toggle-btn {      border: none;      background: var(--accent);      color: #f8fafc;      padding: 0.7rem 1.1rem;      border-radius: 999px;      font-size: 0.95rem;      font-weight: 600;      cursor: pointer;      align-self: flex-start;      transition: transform 0.2s ease, box-shadow 0.2s ease;      box-shadow: 0 10px 24px rgba(15, 118, 110, 0.25);    }    .toggle-btn:hover {      transform: translateY(-2px);    }    .details {      display: none;      border-top: 1px dashed rgba(15, 23, 42, 0.15);      padding-top: 1rem;      margin-top: 0.5rem;      color: var(--muted);      font-size: 0.9rem;      line-height: 1.6;    }    .details.open {      display: block;    }    @keyframes rise {      from {        opacity: 0;        transform: translateY(18px);      }      to {        opacity: 1;        transform: translateY(0);      }    }    @media (max-width: 720px) {      body {        padding: 2.5rem 1.1rem 3rem;      }      .card {        padding: 1.3rem;      }      header p {        font-size: 0.95rem;      }    }</style></head><body class="page-23589355 pagelayout-1 slogan culture-en"><a href="#main-content" class="wv-link-content button">Skip to main content</a>
+<div class="ed-element ed-container wv-boxed wv-spacer" id="ed-1552658404"><div class="inner"><div class="ed-element ed-html" id="ed-1552658519">
+
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZS 3101 Concrete Section Shear Capacity</title>
+  <link rel="preconnect" href="/g/fonts">
+  <link rel="preconnect" href="/g/static" crossorigin="">
+  <link href="/g/fonts.css2?family=Fraunces:wght@600&amp;family=Space+Grotesk:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  
+
+
+  <main class="shell">
+    <header>
+      <h1>NZS 3101 Concrete Section Shear Capacity</h1>
+      <p>Based on NZS 3101:2006 Clauses 7.5 and 9.3.9, this tool estimates nominal shear capacity V<sub>n</sub>. Adjust inputs to match your section and reinforcement.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Geometry &amp; Materials</h2>
+        <div class="field">
+          <label for="fc">Concrete strength f'c (MPa)</label>
+          <input id="fc" type="number" value="25" min="10" step="0.5">
+        </div>
+        <div class="field">
+          <label for="agg">Maximum aggregate size (mm)</label>
+          <input id="agg" type="number" value="19" min="5" step="1">
+        </div>
+        <div class="field">
+          <label for="bw">Section width b<sub>w</sub> (mm)</label>
+          <input id="bw" type="number" value="200" min="100" step="1">
+        </div>
+        <div class="field">
+          <label for="h">Section depth h (mm)</label>
+          <input id="h" type="number" value="400" min="150" step="1">
+        </div>
+        <div class="field">
+          <label for="cover">Effective cover c (mm)</label>
+          <input id="cover" type="number" value="45" min="20" step="1">
+        </div>
+        <div class="field">
+          <label for="as">Total longitudinal steel area A<sub>s</sub> (mm²)</label>
+          <input id="as" type="number" value="2000" min="200" step="1">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Shear Reinforcement</h2>
+        <div class="field">
+          <label for="ds">Stirrup diameter d<sub>s</sub> (mm)</label>
+          <input id="ds" type="number" value="10" min="5" step="1">
+        </div>
+        <div class="field">
+          <label for="legs">Number of legs n</label>
+          <input id="legs" type="number" value="2" min="1" step="1">
+        </div>
+        <div class="field">
+          <label for="s">Stirrup spacing s (mm)</label>
+          <input id="s" type="number" value="150" min="50" step="5">
+        </div>
+        <div class="field">
+          <label for="fy">Stirrup yield strength f<sub>y</sub> (MPa)</label>
+          <input id="fy" type="number" value="500" min="250" max="500" step="10">
+        </div>
+        <div class="notes">
+          Effective cover c is taken to the longitudinal steel centroid, so d<sub>v</sub> = h - c.
+        </div>
+      </div>
+
+      <div class="card result">
+        <h2>Results</h2>
+        <div class="pill">Nominal shear capacity V<sub>n</sub></div>
+        <div class="value-grid">
+          <div class="value-row">
+            <span>Effective depth d<sub>v</sub></span>
+            <strong id="dv">-</strong>
+          </div>
+          <div class="value-row">
+            <span>Effective shear area A<sub>cv</sub></span>
+            <strong id="acv">-</strong>
+          </div>
+          <div class="value-row">
+            <span>Concrete contribution V<sub>c</sub></span>
+            <strong id="vc">-</strong>
+          </div>
+          <div class="value-row">
+            <span>Shear reinforcement V<sub>s</sub></span>
+            <strong id="vs">-</strong>
+          </div>
+          <div class="value-row">
+            <span>Nominal shear capacity V<sub>n</sub></span>
+            <strong id="vn">-</strong>
+          </div>
+        </div>
+        <div id="status" class="status">v<sub>n</sub> ≤ v<sub>max</sub></div>
+        <div class="value-grid">
+          <div class="value-row">
+            <span>Shear stress v<sub>n</sub></span>
+            <strong id="vnStress">-</strong>
+          </div>
+          <div class="value-row">
+            <span>Max shear stress v<sub>max</sub></span>
+            <strong id="vmax">-</strong>
+          </div>
+          <div class="value-row">
+            <span>k<sub>a</sub> / k<sub>d</sub></span>
+            <strong id="kFactors">-</strong>
+          </div>
+          <div class="value-row">
+            <span>v<sub>b</sub> / v<sub>c</sub></span>
+            <strong id="vFactors">-</strong>
+          </div>
+        </div>
+        <button id="detailToggle" class="toggle-btn" type="button">Show detailed calculations</button>
+        <div id="detailPanel" class="details">
+          <div id="detailText">-</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Formula Summary</h2>
+        <div class="formulas">
+          V<sub>n</sub> = V<sub>c</sub> + V<sub>s</sub><br>
+          V<sub>c</sub> = v<sub>c</sub> · A<sub>cv</sub><br>
+          v<sub>c</sub> = k<sub>a</sub> k<sub>d</sub> v<sub>b</sub><br>
+          v<sub>b</sub> = min[(0.07 + 10ρ<sub>w</sub>)√f'c , 0.2√f'c], and ≥ 0.08√f'c<br>
+          V<sub>s</sub> = A<sub>v</sub> f<sub>y</sub> d<sub>v</sub> / s<br>
+          A<sub>v</sub> = n · (π d<sub>s</sub><sup>2</sup>/4)
+        </div>
+      </div>
+      <div class="card">
+        <h2>Notes</h2>
+        <div class="notes">
+          This page assumes normal-weight concrete and uses v<sub>max</sub> = min(0.2 f'c, 10 MPa).
+          k<sub>a</sub> is linearly interpolated for aggregate sizes 10–19 mm.
+          For d<sub>v</sub> &gt; 400 mm, k<sub>d</sub> = (400/d<sub>v</sub>)<sup>0.25</sup> with 0.9 ≤ k<sub>d</sub> ≤ 1.0.
+          For d<sub>v</sub> ≤ 200 mm, v<sub>c</sub> is the larger of 0.17k<sub>a</sub>√f'c and k<sub>a</sub> v<sub>b</sub>.
+          Results are for quick checks; confirm with the full code and design conditions.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="Conshearcalc.js"></script>
+
+
+</div></div></div><script src="/webcard/static/app.bundle.1768398969.js"></script><script src="/js/custom.251101051103.js"></script></body>
+</html>

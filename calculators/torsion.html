@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZS 3101 Torsional Capacity Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #5b6474;
+      --highlight: #d4a017;
+      --paper: #f8f3ea;
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 22px 60px rgba(15, 23, 42, 0.2);
+      --accent: #0f766e;
+      --danger: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: radial-gradient(circle at 15% 15%, rgba(255,255,255,0.9), transparent 55%),
+                  radial-gradient(circle at 80% 20%, rgba(212,160,23,0.25), transparent 45%),
+                  linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 45%, #c7b098 100%);
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--ink);
+      padding: 3.5rem 1.5rem 4rem;
+    }
+    .shell { width: min(1080px, 100%); margin: 0 auto; display: grid; gap: 2rem; }
+    header { display: grid; gap: 0.6rem; }
+    h1 { font-family: "Fraunces", "Times New Roman", serif; font-size: clamp(2rem,4vw,3rem); margin: 0; }
+    header p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 1.5rem; }
+    .card { background: var(--card); border-radius: 18px; padding: 1.6rem; box-shadow: var(--shadow); backdrop-filter: blur(16px); border: 1px solid rgba(15,118,110,0.12); }
+    .card h2 { margin: 0 0 1.1rem; font-size: 1.1rem; text-transform: uppercase; color: var(--accent); letter-spacing: 0.04em; }
+    .field { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+    label { font-size: 0.92rem; color: var(--muted); }
+    input, select { width: 100%; padding: 0.65rem 0.75rem; border-radius: 10px; border: 1px solid rgba(15,23,42,0.15); font-size: 0.95rem; background: #fff; outline: none; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.15); }
+    .pill { background: #0f172a; color: #f8fafc; padding: 0.65rem 0.85rem; border-radius: 999px; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .value-grid { display: grid; gap: 0.75rem; }
+    .value-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dashed rgba(15,23,42,0.12); padding-bottom: 0.4rem; }
+    .value-row span { color: var(--muted); font-size: 0.92rem; }
+    .value-row strong { font-size: 1.05rem; }
+    .status { padding: 0.7rem 0.9rem; border-radius: 12px; background: rgba(15,118,110,0.12); color: var(--accent); font-weight: 600; }
+    .status.danger { background: rgba(180,35,24,0.12); color: var(--danger); }
+    .notes { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .toggle-btn { border: none; background: var(--accent); color: #f8fafc; padding: 0.7rem 1.1rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 10px 24px rgba(15,118,110,0.25); }
+    .toggle-btn:hover { transform: translateY(-2px); }
+    .details { display: none; border-top: 1px dashed rgba(15,23,42,0.15); padding-top: 1rem; margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .details.open { display: block; }
+    @media (max-width: 720px) { body { padding: 2.5rem 1.1rem 3rem; } .card { padding: 1.3rem; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>NZS 3101 Torsional Capacity</h1>
+      <p>Based on NZS 3101:2006 Clauses 7.4 and 9.4. Estimate torsional capacity for rectangular sections under pure or combined torsion.</p>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Materials & Geometry</h2>
+        <div class="field">
+          <label for="fc">Concrete strength f'c (MPa)</label>
+          <input id="fc" type="number" value="30" min="10" step="0.5">
+        </div>
+        <div class="field">
+          <label for="bw">Web width bw (mm)</label>
+          <input id="bw" type="number" value="250" min="100" step="10">
+        </div>
+        <div class="field">
+          <label for="h">Total depth h (mm)</label>
+          <input id="h" type="number" value="500" min="150" step="10">
+        </div>
+        <div class="field">
+          <label for="cover">Effective cover c (mm)</label>
+          <input id="cover" type="number" value="40" min="20" step="5">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Reinforcement</h2>
+        <div class="field">
+          <label for="Asl">Longitudinal steel Asl (mm²)</label>
+          <input id="Asl" type="number" value="1200" min="200" step="50">
+        </div>
+        <div class="field">
+          <label for="ds">Stirrup diameter ds (mm)</label>
+          <input id="ds" type="number" value="10" min="5" step="1">
+        </div>
+        <div class="field">
+          <label for="legs">Stirrup legs n</label>
+          <input id="legs" type="number" value="2" min="2" step="1">
+        </div>
+        <div class="field">
+          <label for="s">Stirrup spacing s (mm)</label>
+          <input id="s" type="number" value="150" min="50" step="5">
+        </div>
+        <div class="field">
+          <label for="fy">Steel yield strength fy (MPa)</label>
+          <input id="fy" type="number" value="500" min="250" step="10">
+        </div>
+      </div>
+
+      <div class="card result">
+        <h2>Results</h2>
+        <div class="pill">Nominal torsion capacity Tn</div>
+        <div class="value-grid">
+          <div class="value-row"><span>x</span><strong id="x">-</strong></div>
+          <div class="value-row"><span>y</span><strong id="y">-</strong></div>
+          <div class="value-row"><span>Aoh</span><strong id="Aoh">-</strong></div>
+          <div class="value-row"><span>Ph</span><strong id="Ph">-</strong></div>
+          <div class="value-row"><span>Concrete Tc (kN·m)</span><strong id="tc">-</strong></div>
+          <div class="value-row"><span>Steel Ts (kN·m)</span><strong id="ts">-</strong></div>
+          <div class="value-row"><span>Tn (kN·m)</span><strong id="tn">-</strong></div>
+        </div>
+        <div id="status" class="status">Enter values and compute</div>
+        <button class="toggle-btn" type="button" onclick="calculate()">Calculate</button>
+        <button class="toggle-btn" type="button" style="background:#64748b;margin-left:0.5rem" onclick="showDetails()">Details</button>
+        <div id="detailPanel" class="details">
+          <div id="detailText">-</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Formulas (Clause 9.4)</h2>
+        <div class="notes">
+          T<sub>n</sub> = T<sub>c</sub> + T<sub>s</sub><br>
+          T<sub>c</sub> = 0.33 √f'c · Aoh · Ph / (3 + 0.58√f'c)<br>
+          T<sub>s</sub> = (Ao · Ath · fy · cot θ) / s<br>
+          Ao ≈ 0.85 Aoh, θ = 45° for thin sections
+        </div>
+      </div>
+      <div class="card">
+        <h2>Notes</h2>
+        <div class="notes">
+          Assumes closed rectangular stirrups.<br>
+          For combined shear+torsion, use interaction per Clause 9.4.3.<br>
+          Results are for quick checks; verify with full design.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function calculate() {
+      const fc = parseFloat(document.getElementById('fc').value);
+      const bw = parseFloat(document.getElementById('bw').value);
+      const h = parseFloat(document.getElementById('h').value);
+      const cover = parseFloat(document.getElementById('cover').value);
+      const Asl = parseFloat(document.getElementById('Asl').value);
+      const ds = parseFloat(document.getElementById('ds').value);
+      const legs = parseInt(document.getElementById('legs').value);
+      const s = parseFloat(document.getElementById('s').value);
+      const fy = parseFloat(document.getElementById('fy').value);
+
+      const dv = h - cover;
+      const x = Math.min(bw - 2*cover, dv - cover);
+      const y = Math.min(dv - cover, bw - cover);
+      const Aoh = x * y;
+      const Ph = 2*(x + y);
+
+      const sqrtFc = Math.sqrt(fc);
+      const Tc = (0.33 * sqrtFc * Aoh * Ph) / (3 + 0.58 * sqrtFc) / 1e6;
+
+      const Ao = 0.85 * Aoh;
+      const Av = legs * Math.PI * ds*ds / 4;
+      const Ts = (Ao * Av * fy * 1) / s / 1e6;
+
+      const Tn = Tc + Ts;
+
+      document.getElementById('x').textContent = x.toFixed(0) + ' mm';
+      document.getElementById('y').textContent = y.toFixed(0) + ' mm';
+      document.getElementById('Aoh').textContent = (Aoh/1e4).toFixed(2) + ' cm²';
+      document.getElementById('Ph').textContent = (Ph/1e3).toFixed(2) + ' m';
+      document.getElementById('tc').textContent = Tc.toFixed(2) + ' kN·m';
+      document.getElementById('ts').textContent = Ts.toFixed(2) + ' kN·m';
+      document.getElementById('tn').textContent = Tn.toFixed(2) + ' kN·m';
+
+      const status = document.getElementById('status');
+      status.textContent = 'Torsional capacity calculated';
+      status.className = 'status';
+
+      const detail = `Step-by-step:
+1. x = bw - 2c = ${bw} - 2×${cover} = ${x} mm (core dimension)
+2. y = h - c - cover ≈ ${y} mm
+3. Aoh = x × y = ${Aoh.toFixed(0)} mm²
+4. Ph = 2(x+y) = ${Ph.toFixed(0)} mm
+5. Tc = 0.33√f'c·Aoh·Ph/(3+0.58√f'c) = ${Tc.toFixed(2)} kN·m
+6. Av = n·π·ds²/4 = ${Av.toFixed(0)} mm²
+7. Ts = Ao·Av·fy·cotθ/s = ${Ts.toFixed(2)} kN·m
+8. Tn = Tc + Ts = ${Tn.toFixed(2)} kN·m`;
+      document.getElementById('detailText').textContent = detail;
+    }
+
+    function showDetails() {
+      document.getElementById('detailPanel').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>

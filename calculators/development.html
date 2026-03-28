@@ -1,591 +1,180 @@
-<!DOCTYPE html><html lang="en"><head><title>Rebar Development Length - Calforya - Structural Engineering Calculations</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta property="og:title" content="Rebar Development Length - Calforya - Structural Engineering Calculations" /><meta property="og:type" content="website" /><meta property="og:locale" content="en" /><meta property="og:url" content="https://calforya.com/rebar-development-length" /><meta name="viewport" content="width=device-width, initial-scale=1" /><link rel="icon" href="data:," /><link rel="preconnect" href="" /><link rel="stylesheet" type="text/css" media="screen" href="/webcard/static/app.min.1768398951.css"/><link rel="stylesheet" type="text/css" media="screen" href="/css/custom.251101052247.css" id="customcss"/><link rel="canonical" href="https://calforya.com/rebar-development-length"/><script>if (!webcard) var webcard={};webcard.id=2288008;webcard.moduleId=18318703;webcard.culture="en";webcard.type=2;webcard.isEdit=false;webcard.isPreview=true;webcard.isMobile=/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);webcard.isTouch='ontouchstart' in window || navigator.msMaxTouchPoints > 0;webcard.googleMapsEmbedApiKey='AIzaSyDoOLq_ts27g3vEog9sGYB0GJSyWBDK9gs';webcard.googleMapsApiKey='';webcard.apiHost=location.host + '/api.php';var extraPath='';</script><link rel="preload" as="style" href="/g/fonts.css?family=Open+Sans:400%7CRoboto:400,700&amp;display=swap" /><link rel="stylesheet" media="print" onload="this.media='all'" href="/g/fonts.css?family=Open+Sans:400%7CRoboto:400,700&amp;display=swap" /><style>figure{margin:0}#ed-1022468158 img { width: 220px; } #ed-1022468158 { flex-basis: auto; } @media screen and (max-width: 575px) {  #ed-1022468158 img { width: 220px; }} #ed-1022468161 { flex-grow: 1; flex-basis: auto; } #ed-1022468161 > .inner { place-content: center flex-end; align-items: center; } @media screen and (max-width: 975px) {  #ed-1022468161 > .inner { justify-content: flex-end; }} #ed-1022468170 { flex-basis: auto; flex-grow: 1; } #ed-1157450951 > .inner { align-items: center; justify-content: space-between; } :root {            color-scheme: light;            font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;            line-height: 1.5;            --accent: #1f6feb;            --accent-soft: rgba(31, 111, 235, 0.12);            --muted: #4a5461;            --border: #d0d7de;            --panel: #f8fbff;        }        body {            margin: 0;            background: #f5f7fb;            color: #1c1f23;        }        header {            background: #0b1f3a;            color: #ffffff;            padding: 1.5rem clamp(1rem, 4vw, 3rem);        }        header h1 {            margin: 0;            font-size: clamp(1.7rem, 2.5vw, 2.5rem);            font-weight: 600;        }        header p {            margin-top: 0.45rem;            max-width: 760px;            font-size: 0.95rem;            color: #d3def1;        }        main {            padding: clamp(1rem, 4vw, 3rem);            display: grid;            gap: clamp(1rem, 3vw, 2.5rem);        }        .card {            background: #ffffff;            border-radius: 12px;            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);            padding: clamp(1rem, 3vw, 2rem);        }        .card h2 {            margin: 0 0 1rem;            font-size: clamp(1.2rem, 1.8vw, 1.6rem);            font-weight: 600;            color: #0b1f3a;        }        .form-section {            margin-bottom: 1.4rem;        }        .form-section h3 {            margin: 0 0 0.6rem;            font-size: 1.05rem;            font-weight: 600;            color: #13294b;        }        .form-grid {            display: grid;            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));            gap: 1rem 1.5rem;        }        .field {            display: flex;            flex-direction: column;        }        .field span {            font-weight: 600;            margin-bottom: 0.35rem;            font-size: 0.92rem;        }        input[type="number"], select {            border-radius: 8px;            border: 1px solid var(--border);            padding: 0.55rem 0.75rem;            font-size: 0.95rem;            transition: border 0.2s ease, box-shadow 0.2s ease;        }        input[type="number"]:focus, select:focus {            outline: none;            border-color: var(--accent);            box-shadow: 0 0 0 3px var(--accent-soft);        }        .checkbox-row {            display: flex;            flex-wrap: wrap;            gap: 0.8rem 1.5rem;            margin-top: 0.4rem;        }        .checkbox-row label {            display: inline-flex;            align-items: center;            gap: 0.4rem;            font-size: 0.9rem;        }        details {            margin-top: 0.8rem;            border-radius: 10px;            border: 1px solid var(--border);            background: #f4f7fc;            padding: 0.9rem 1rem;        }        details summary {            cursor: pointer;            font-weight: 600;            color: #0b1f3a;        }        details pre {            white-space: pre-wrap;            font-family: "Consolas", "Courier New", monospace;            font-size: 0.88rem;            color: #1f2a37;            margin: 0.6rem 0 0;        }        .actions {            display: flex;            flex-wrap: wrap;            gap: 0.8rem;            margin-top: 0.6rem;        }        button {            border: none;            border-radius: 999px;            padding: 0.65rem 1.5rem;            font-size: 0.95rem;            font-weight: 600;            cursor: pointer;            transition: transform 0.15s ease, box-shadow 0.15s ease;        }        button.primary {            background: var(--accent);            color: #ffffff;            box-shadow: 0 12px 24px rgba(31, 111, 235, 0.2);        }        button.secondary {            background: #e7ecf4;            color: #1c1f23;        }        button.generate {            background: #198754;            color: #ffffff;            box-shadow: 0 12px 24px rgba(25, 135, 84, 0.2);        }        button:disabled {            opacity: 0.6;            cursor: not-allowed;            box-shadow: none;        }        button:not(:disabled):hover {            transform: translateY(-1px);            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);        }        .result-card {            margin-top: 1.5rem;            border: 1px solid var(--border);            border-radius: 12px;            background: var(--panel);            padding: 1.2rem 1.4rem;        }        .result-card h3 {            margin: 0 0 0.8rem;            font-size: 1.05rem;            font-weight: 600;            color: #0b1f3a;        }        .summary-block {            border-left: 4px solid var(--accent);            background: #eef3ff;            border-radius: 10px;            padding: 0.9rem 1rem;        }        .summary-block strong {            font-size: 1rem;        }        .summary-block span {            display: block;            margin-top: 0.25rem;            font-size: 1.05rem;            font-weight: 600;        }        .report-section {            margin-top: 1.1rem;            border: 1px dashed #c3d3f5;            border-radius: 10px;            padding: 1rem 1.1rem;            background: #ffffff;        }        .report-section h4 {            margin: 0 0 0.5rem;            font-size: 0.98rem;            color: #13294b;        }        .report-section ul {            list-style: none;            padding-left: 0;            margin: 0;            display: grid;            gap: 0.45rem;        }        .report-section li {            position: relative;            padding-left: 1.3rem;            font-size: 0.94rem;        }        .report-section li::before {            content: "•";            position: absolute;            left: 0;            top: 0.05rem;            color: var(--accent);        }        .coeff-table {            width: 100%;            border-collapse: collapse;            margin-top: 0.8rem;            background: #ffffff;            border: 1px solid var(--border);            border-radius: 8px;            overflow: hidden;            font-size: 0.92rem;        }        .coeff-table th, .coeff-table td {            padding: 0.55rem 0.75rem;            text-align: left;            border-bottom: 1px solid #e2e8f0;        }        .coeff-table th {            background: #f4f8ff;            font-weight: 600;        }        .note {            margin-top: 0.9rem;            border-radius: 8px;            padding: 0.75rem 1rem;            font-size: 0.9rem;            background: #fef6e7;            border-left: 4px solid #ffa94d;            color: #7c4a03;        }        .note.info {            background: #eef9ff;            border-color: #3aa0d8;            color: #0c5460;        }        .note.warning {            background: #fdecec;            border-color: #f87171;            color: #7f1d1d;        }        .hook-figure {            margin-top: 1.2rem;            background: #ffffff;            border: 1px solid var(--border);            border-radius: 10px;            padding: 1.1rem;        }        .hook-figure img {            display: block;            width: 100%;            max-width: 560px;            margin: 0 auto;        }        .hook-figure p {            margin-top: 0.6rem;            text-align: center;            font-size: 0.88rem;            color: var(--muted);        }        .disclaimer {            font-size: 0.85rem;            color: var(--muted);        }        .hidden {            display: none !important;        }        @media (max-width: 640px) {            .checkbox-row {                flex-direction: column;            }            button {                flex: 1 1 auto;            }        } #ed-1049323944 img { width: 200px; } #ed-1049323959 .space { height: 18.4px; } #ed-1049323941 > .inner { justify-content: center; } #ed-1049323974 { flex-grow: 1; } #ed-1049323965 > .inner { justify-content: center; } #ed-1049323986 { flex-grow: 1; } #ed-1049323977 > .inner { justify-content: center; } #ed-1049323977 { flex-grow: 1; } #ed-1049323989 hr { width: 100%; height: 1px; } #ed-1049323938 > .inner { justify-content: center; align-items: stretch; }</style></head><body class="page-18318703 pagelayout-1 slogan culture-en"><a href="#main-content" class="wv-link-content button">Skip to main content</a>
-<div class="ed-element ed-reference ed-reference-container wv-boxed menu-wrapper wv-overflow_visible preset-menu-v2-border full-width" style="background: linear-gradient(90deg, rgb(46, 30, 92) 35%, rgb(255, 255, 255) 100%);" id="ed-1157450951" data-reference="1022468155"><div class="inner"><div class="ed-element ed-logo" id="ed-1022468158"><a href="/"><img src="/images/220%2C1131x381%2B195%2B64/19756605/Logo_v1.2.1-NwNV-qVOVhlVCPUypH4uvQ.png" alt=""></a></div><div class="ed-element ed-container mobile-cont wv-overflow_visible" id="ed-1022468161"><div class="inner"><div class="ed-element ed-html menu-trigger" id="ed-1022468167"><div class="menu-trigger-box"><button class="menu-trigger-inner">Menu</button></div></div></div></div><nav class="ed-element ed-menu wv-custom" id="ed-1022468170"><ul class="menu-level-0"><li class="wv-page-18242599-en first"><a href="/" class="wv-page-18242599-en first">Home</a></li><li><a href="/#ed-1014625396" class="wv-link-elm">About</a></li><li class="wv-page-18317453-en"><a href="/tools" class="wv-page-18317453-en">Tools</a></li><li class="wv-page-18608467-en end"><a href="/forum" class="wv-page-18608467-en last">Forum</a></li></ul></nav></div></div><div class="ed-element ed-container wv-boxed wv-spacer" id="ed-1021556041"><div class="inner"><div class="ed-element ed-html" id="ed-1021556142">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZS 3101 Development Length Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink: #0f172a; --muted: #5b6474; --accent: #0f766e; --card: rgba(255,255,255,0.85); --shadow: 0 20px 50px rgba(15,23,42,0.15); }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 50%, #c7b098 100%); font-family: 'Space Grotesk', sans-serif; color: var(--ink); padding: 2rem 1rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem,4vw,2.5rem); margin: 0 0 0.5rem; color: var(--ink); }
+    .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .card { background: var(--card); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+    h2 { margin: 0 0 1rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .field label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    .field input, .field select { padding: 0.6rem 0.8rem; border-radius: 8px; border: 1px solid rgba(15,23,42,0.15); font-size: 0.95rem; }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); }
+    .checkbox-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .checkbox-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; }
+    .btn { background: var(--accent); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+    .btn:hover { transform: translateY(-2px); }
+    .result { display: none; margin-top: 1.5rem; }
+    .result.show { display: block; }
+    .result-box { background: #e8f5f3; border-radius: 12px; padding: 1.2rem; border-left: 4px solid var(--accent); }
+    .result-box h3 { margin: 0 0 0.8rem; font-size: 1.1rem; }
+    .result-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .steps { margin-top: 1rem; background: white; border-radius: 10px; padding: 1rem; font-size: 0.9rem; line-height: 1.6; }
+    .steps code { background: #f0f0f0; padding: 0.1rem 0.3rem; border-radius: 4px; }
+    .formula { background: #f8f8f8; padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; }
+    .note { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NZS 3101 Development Length</h1>
+    <p class="subtitle">Calculate rebar development length and hooked bar anchorage per NZS 3101:2006 Clause 8.6</p>
 
-
-    <meta charset="UTF-8">
-    <title>NZS 3101 Rebar Toolkit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-
-
-<header>
-    <h1>NZS 3101 Rebar Toolkit</h1>
-    <p>Web version of the NZS 3101 reinforcement toolkit covering development length checks and minimum bend diameters. Report output now follows a professional, specification-style layout.</p>
-</header>
-<main>
-    <section class="card">
-        <h2>Development Length</h2>
-        <form id="dev-form">
-            <div class="form-section">
-                <h3>General Inputs (MPa, mm)</h3>
-                <div class="form-grid">
-                    <label class="field">
-                        <span>f'<sub>c</sub> (MPa)</span>
-                        <input type="number" id="dev-fc" name="fc" value="30" step="0.5" min="0">
-                    </label>
-                    <label class="field">
-                        <span>f<sub>y</sub> (MPa)</span>
-                        <input type="number" id="dev-fy" name="fy" value="500" step="10" min="0">
-                    </label>
-                    <label class="field">
-                        <span>d<sub>b</sub> (mm)</span>
-                        <input type="number" id="dev-db" name="db" value="20" step="1" min="0">
-                    </label>
-                </div>
-                <div class="checkbox-row">
-                    <label><input type="checkbox" id="dev-top-bar" name="top_bar"> Top bar (fresh concrete &gt; 300 mm below)</label>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Calculation Options</h3>
-                <div class="form-grid">
-                    <label class="field">
-                        <span>Type</span>
-                        <select id="dev-type" name="calc_type">
-                            <option value="Straight (Basic)">Straight (Basic)</option>
-                            <option value="Straight (Refined)" selected="">Straight (Refined)</option>
-                            <option value="Hooked (Standard)">Hooked (Standard)</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="checkbox-row">
-                    <label><input type="checkbox" id="dev-show-steps" name="show_steps" checked=""> Show detailed steps</label>
-                    <label><input type="checkbox" id="dev-plain-comp" name="plain_comp"> Plain bar/wire in compression (8.6.6)</label>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Refined Parameters (Eq 8-3) &amp; Hook Factors</h3>
-                <div class="form-grid">
-                    <label class="field">
-                        <span>A<sub>s</sub> (mm²)</span>
-                        <input type="number" id="dev-As" name="As" value="500" step="10" min="0">
-                    </label>
-                    <label class="field">
-                        <span>A<sub>req</sub> (mm²)</span>
-                        <input type="number" id="dev-Areq" name="Areq" value="400" step="10" min="0">
-                    </label>
-                    <label class="field">
-                        <span>c<sub>m</sub> (mm)</span>
-                        <input type="number" id="dev-cm" name="cm" value="30" step="1" min="0">
-                    </label>
-                    <label class="field">
-                        <span>A<sub>tr</sub> (mm²)</span>
-                        <input type="number" id="dev-Atr" name="Atr" value="0" step="10" min="0">
-                    </label>
-                    <label class="field">
-                        <span>s (mm)</span>
-                        <input type="number" id="dev-s" name="s" value="100" step="1" min="0">
-                    </label>
-                    <label class="field">
-                        <span>f<sub>yt</sub> (MPa)</span>
-                        <input type="number" id="dev-fyt" name="fyt" value="300" step="10" min="0">
-                    </label>
-                    <label class="field">
-                        <span>n (terminating bars)</span>
-                        <input type="number" id="dev-n" name="nbars" value="1" step="1" min="1">
-                    </label>
-                </div>
-                <div class="checkbox-row" id="hook-options">
-                    <label><input type="checkbox" id="hook-d32" name="bar_le_32" checked=""> d<sub>b</sub> ≤ 32 mm</label>
-                    <label><input type="checkbox" id="hook-side" name="side_cover"> Side cover normal to hook plane ≥ 60 mm</label>
-                    <label><input type="checkbox" id="hook-tail" name="tail_cover"> Tail cover (90° hooks) ≥ 40 mm</label>
-                    <label><input type="checkbox" id="hook-confined" name="confined"> Confined by closed stirrups/hoops (≤ 6 d<sub>b</sub>)</label>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button type="submit" class="primary">Compute</button>
-                <button type="button" class="secondary" id="dev-reset">Reset</button>
-                <button type="button" class="generate" id="dev-pdf" disabled="">Download PDF</button>
-            </div>
-        </form>
-        <div id="dev-result" class="result-card" hidden="">
-            <h3>Report</h3>
-            <div id="dev-output"></div>
-                        <div id="hook-figure" class="hook-figure hidden" aria-hidden="true">
-                <img src="../assets/Hooked%20bar%20Figure.png" alt="Figure 8.1 – Standard hooks" loading="lazy">
-                <p>Figure 8.1 – Standard hooks (NZS 3101 Figure 8.1)</p>
-            </div>
+    <div class="card">
+      <h2>Materials & Bar</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>f'c (MPa)</label>
+          <input type="number" id="fc" value="30" step="0.5" min="10">
         </div>
-    </section>
-
-    <section class="card">
-        <h2>Minimum Bend Diameter</h2>
-        <form id="bend-form">
-            <div class="form-section">
-                <div class="form-grid">
-                    <label class="field">
-                        <span>Bar type</span>
-                        <select id="bend-type" name="bend_type">
-                            <option value="Main bar">Main bar</option>
-                            <option value="Stirrup/Tie">Stirrup / Tie</option>
-                        </select>
-                    </label>
-                    <label class="field">
-                        <span>Bar diameter (mm)</span>
-                        <input type="number" id="bend-db" name="db" value="16" step="1" min="0">
-                    </label>
-                    <label class="field">
-                        <span>f<sub>y</sub> (MPa)</span>
-                        <input type="number" id="bend-fy" name="fy" value="500" step="10" min="0">
-                    </label>
-                </div>
-                <div class="checkbox-row">
-                    <label><input type="checkbox" id="bend-galv" name="galv"> Galvanized reinforcement</label>
-                    <label><input type="checkbox" id="bend-deformed" name="deformed" checked=""> Deformed (for stirrups/ties)</label>
-                    <label><input type="checkbox" id="bend-show-steps" name="show_steps" checked=""> Show equations and steps</label>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button type="submit" class="primary">Compute</button>
-                <button type="button" class="secondary" id="bend-reset">Reset</button>
-                <button type="button" class="generate" id="bend-pdf" disabled="">Download PDF</button>
-            </div>
-        </form>
-        <div id="bend-result" class="result-card" hidden="">
-            <h3>Report</h3>
-            <pre id="bend-output" class="output"></pre>
+        <div class="field">
+          <label>fy (MPa)</label>
+          <input type="number" id="fy" value="500" step="10" min="250">
         </div>
-    </section>
+        <div class="field">
+          <label>Bar diameter db (mm)</label>
+          <input type="number" id="db" value="16" step="1" min="6">
+        </div>
+      </div>
+      <div class="checkbox-row">
+        <label><input type="checkbox" id="topBar"> Top bar (>300mm below fresh concrete)</label>
+      </div>
+    </div>
 
-    <section class="card disclaimer">
-        <strong>Disclaimer</strong>
-        <p>This tool transcribes NZS 3101:2006 provisions for convenience. Verify all inputs, assumptions, and outcomes against the latest standard and project requirements.</p>
-    </section>
-</main>
+    <div class="card">
+      <h2>Calculation Type</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Type</label>
+          <select id="calcType">
+            <option value="basic">Straight - Basic (Eq 8-2)</option>
+            <option value="refined">Straight - Refined (Eq 8-3)</option>
+            <option value="hook">Hooked - Standard (Eq 8-12)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid" id="refinedParams" style="margin-top:1rem;display:none;">
+        <div class="field"><label>As provided (mm²)</label><input type="number" id="As" value="400"></div>
+        <div class="field"><label>As required (mm²)</label><input type="number" id="Areq" value="300"></div>
+        <div class="field"><label>Cover cm (mm)</label><input type="number" id="cm" value="30"></div>
+        <div class="field"><label>Atr (mm²)</label><input type="number" id="Atr" value="0"></div>
+        <div class="field"><label>Spacing s (mm)</label><input type="number" id="s" value="100"></div>
+        <div class="field"><label>fyt (MPa)</label><input type="number" id="fyt" value="300"></div>
+      </div>
+      <div class="form-grid" id="hookParams" style="margin-top:1rem;display:none;">
+        <div class="field"><label>As provided (mm²)</label><input type="number" id="AsH" value="400"></div>
+        <div class="field"><label>As required (mm²)</label><input type="number" id="AreqH" value="300"></div>
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="d32" checked> db ≤ 32mm</label>
+          <label><input type="checkbox" id="sideCover"> Side cover ≥ 60mm</label>
+          <label><input type="checkbox" id="confined"> Confined by stirrups</label>
+        </div>
+      </div>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-YcsIPHQi65O0zOy7YmXfA2ioTba9TFes2xNi85cvPkYDe/GWcdef/frkCxNwszF2lRwVEKeX5JZwu2w3TNqYvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-    const devForm = document.getElementById("dev-form");
-    const devTypeField = document.getElementById("dev-type");
-    const hookOptionsRow = document.getElementById("hook-options");
-    const devResultCard = document.getElementById("dev-result");
-    const devOutput = document.getElementById("dev-output");
-    const hookFigure = document.getElementById("hook-figure");
-    const devPdfButton = document.getElementById("dev-pdf");
-    const devReset = document.getElementById("dev-reset");
+    <button class="btn" onclick="calculate()">Calculate</button>
 
-    const bendForm = document.getElementById("bend-form");
-    const bendResultCard = document.getElementById("bend-result");
-    const bendOutput = document.getElementById("bend-output");
-    const bendPdfButton = document.getElementById("bend-pdf");
-    const bendReset = document.getElementById("bend-reset");
+    <div class="result" id="result">
+      <div class="result-box">
+        <h3>Development Length</h3>
+        <div class="result-value" id="Ld">-</div>
+        <div class="steps" id="steps"></div>
+      </div>
+      <p class="note">Based on NZS 3101:2006 Clause 8.6. Results for quick checks only - verify with full design.</p>
+    </div>
+  </div>
 
-    function updateHookVisibility() {
-        const show = devTypeField.value === "Hooked (Standard)";
-        hookOptionsRow.classList.toggle("hidden", !show);
+  <script>
+    function calculate() {
+      const fc = parseFloat(document.getElementById('fc').value);
+      const fy = parseFloat(document.getElementById('fy').value);
+      const db = parseFloat(document.getElementById('db').value);
+      const topBar = document.getElementById('topBar').checked;
+      const calcType = document.getElementById('calcType').value;
+
+      const a1 = topBar ? 1.3 : 1.0;
+      const fcCap = Math.min(fc, 70);
+      const LdbBasic = 0.5 * a1 * fy / Math.sqrt(fcCap) * db;
+
+      let result = '';
+      let steps = '';
+
+      if (calcType === 'basic') {
+        result = LdbBasic.toFixed(0) + ' mm';
+        steps = `<div class="formula">Equation 8-2: Ldb = 0.5 × α1 × (fy/√f'c) × db</div>
+          α1 = ${a1} (${topBar ? 'top bar' : 'non-top bar'})<br>
+          f'c capped at 70 MPa = ${fcCap} MPa<br>
+          Ldb = 0.5 × ${a1} × (${fy}/√${fcCap}) × ${db} = ${result}`;
+      } 
+      else if (calcType === 'refined') {
+        const As = parseFloat(document.getElementById('As').value);
+        const Areq = parseFloat(document.getElementById('Areq').value);
+        const cm = parseFloat(document.getElementById('cm').value);
+        const Atr = parseFloat(document.getElementById('Atr').value);
+        const s = parseFloat(document.getElementById('s').value);
+        const fyt = parseFloat(document.getElementById('fyt').value);
+
+        const aB = Math.min(1, Areq/As);
+        const aC = Math.max(1, Math.min(1.5, 1 + 0.5*(cm/db - 1.5)));
+        const aD = Math.max(1, Math.min(1.5, 1 + (Atr/s)*(fyt/(80*db))));
+        const Ld = Math.max(300, (aB/(aC*aD)) * LdbBasic);
+
+        result = Ld.toFixed(0) + ' mm';
+        steps = `<div class="formula">Equation 8-3: Ld = (αb/(αc×αd)) × Ldb</div>
+          αb = min(1, As,req/As,provided) = ${aB.toFixed(3)}<br>
+          αc = ${aC.toFixed(3)}<br>
+          αd = ${aD.toFixed(3)}<br>
+          Ld = ${result}`;
+      }
+      else if (calcType === 'hook') {
+        const AsH = parseFloat(document.getElementById('AsH').value);
+        const AreqH = parseFloat(document.getElementById('AreqH').value);
+        const d32 = document.getElementById('d32').checked;
+        const sideCover = document.getElementById('sideCover').checked;
+        const confined = document.getElementById('confined').checked;
+
+        const aB = Math.min(1, AreqH/AsH);
+        const a1h = (d32 && sideCover) ? 0.7 : 1.0;
+        const a2h = confined ? 0.8 : 1.0;
+        const base = 0.24 * aB * a1h * a2h * (fy/Math.sqrt(fcCap)) * db;
+        const Ldh = Math.max(8*db, base);
+
+        result = Ldh.toFixed(0) + ' mm';
+        steps = `<div class="formula">Equation 8-12: Ldh = max(8db, 0.24×αb×α1×α2×(fy/√f'c)×db)</div>
+          αb = ${aB.toFixed(3)}<br>
+          α1 = ${a1h} (${d32 && sideCover ? '≤32mm & cover≥60mm' : 'other'})<br>
+          α2 = ${a2h} (${confined ? 'confined' : 'not confined'})<br>
+          Ldh = ${result}`;
+      }
+
+      document.getElementById('Ld').textContent = result;
+      document.getElementById('steps').innerHTML = steps;
+      document.getElementById('result').classList.add('show');
     }
 
-    function format(num, digits = 1) {
-        return Number.isFinite(num) ? Number(num).toFixed(digits) : "NaN";
-    }
-
-    function summaryBlock(title, value) {
-        return `
-            <div class="summary-block">
-                <strong>${title}</strong>
-                <span>${value}</span>
-            </div>
-        `;
-    }
-
-    function stepList(title, steps) {
-        if (!steps.length) {
-            return "";
-        }
-        return `
-            <div class="report-section">
-                <h4>${title}</h4>
-                <ul>${steps.map((t) => `<li>${t}</li>`).join("")}</ul>
-            </div>
-        `;
-    }
-
-    function coeffTable(rows) {
-        if (!rows.length) {
-            return "";
-        }
-        return `
-            <table class="coeff-table">
-                <thead><tr><th>Parameter</th><th>Value / Description</th></tr></thead>
-                <tbody>${rows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("")}</tbody>
-            </table>
-        `;
-    }
-
-    function noteBlock(text, tone = "standard") {
-        let cls = "note";
-        if (tone === "info") cls += " info";
-        if (tone === "warning") cls += " warning";
-        return `<div class="${cls}">${text}</div>`;
-    }
-
-    function capFc(fc) {
-        return Math.min(fc, 70);
-    }
-
-    function ldBasicStraight(db, fy, fc, isTopBar) {
-        if (db <= 0 || fy <= 0 || fc <= 0) {
-            return Number.NaN;
-        }
-        const a1 = isTopBar ? 1.3 : 1.0;
-        const fcUsed = capFc(fc);
-        if (fcUsed <= 0) {
-            return Number.NaN;
-        }
-        return 0.5 * a1 * fy / Math.sqrt(fcUsed) * db;
-    }
-
-    function alphaB(As, Areq) {
-        if (As <= 0 || Areq <= 0) {
-            return 1.0;
-        }
-        return Math.min(1.0, Math.max(0.0, Areq / As));
-    }
-
-    function alphaC(cm, db) {
-        if (db <= 0) {
-            return 1.0;
-        }
-        const raw = 1.0 + 0.5 * (cm / db - 1.5);
-        return Math.max(1.0, Math.min(1.5, raw));
-    }
-
-    function alphaD(Atr, s, fyt, n, db) {
-        if (s <= 0 || db <= 0 || n <= 0) {
-            return 1.0;
-        }
-        const raw = 1.0 + (Atr / s) * (fyt / (80.0 * n * db));
-        return Math.max(1.0, Math.min(1.5, raw));
-    }
-
-    function ldRefinedStraight(db, fy, fc, isTopBar, As, Areq, cm, Atr, s, fyt, n) {
-        const basic = ldBasicStraight(db, fy, fc, isTopBar);
-        if (!Number.isFinite(basic)) {
-            return { value: Number.NaN, basic };
-        }
-        const aB = alphaB(As, Areq);
-        const aC = alphaC(cm, db);
-        const aD = alphaD(Atr, s, fyt, Math.max(1, n), db);
-        const refined = (aB / (aC * aD)) * basic;
-        return { value: Math.max(300.0, refined), basic, aB, aC, aD };
-    }
-
-    function ldhHooked(db, fy, fc, As, Areq, barLe32, sideCover, tailCover, confined) {
-        const fcUsed = capFc(fc);
-        const aB = alphaB(As, Areq);
-        const a1 = (barLe32 && sideCover) ? 0.7 : 1.0;
-        const a2 = confined ? 0.8 : 1.0;
-        if (db <= 0 || fy <= 0 || fcUsed <= 0) {
-            return { value: Number.NaN, base: Number.NaN, aB, a1, a2, fcUsed };
-        }
-        const base = 0.24 * aB * a1 * a2 * (fy / Math.sqrt(fcUsed)) * db;
-        const value = Math.max(8.0 * db, base);
-        return { value, base, aB, a1, a2, fcUsed };
-    }
-
-    function renderDevReport(html, showHookFigure) {
-        devOutput.innerHTML = html;
-        hookFigure.classList.toggle("hidden", !showHookFigure);
-        hookFigure.setAttribute("aria-hidden", showHookFigure ? "false" : "true");
-        devResultCard.hidden = false;
-        devPdfButton.disabled = false;
-    }
-
-    devForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const fc = parseFloat(document.getElementById("dev-fc").value);
-        const fy = parseFloat(document.getElementById("dev-fy").value);
-        const db = parseFloat(document.getElementById("dev-db").value);
-        const topBar = document.getElementById("dev-top-bar").checked;
-        const calcType = devTypeField.value;
-        const showSteps = document.getElementById("dev-show-steps").checked;
-        const plainComp = document.getElementById("dev-plain-comp").checked;
-
-        if ([fc, fy, db].some((val) => Number.isNaN(val) || val <= 0)) {
-            window.alert("Enter valid positive values for f'c, f_y, and d_b.");
-            return;
-        }
-
-        const Ldb = ldBasicStraight(db, fy, fc, topBar);
-        if (!Number.isFinite(Ldb)) {
-            window.alert("Unable to compute development length with the provided inputs.");
-            return;
-        }
-
-        const fcCap = capFc(fc);
-        const a1 = topBar ? 1.3 : 1.0;
-
-        const As = parseFloat(document.getElementById("dev-As").value) || 0;
-        const Areq = parseFloat(document.getElementById("dev-Areq").value) || 0;
-        const cm = parseFloat(document.getElementById("dev-cm").value) || 0;
-        const Atr = parseFloat(document.getElementById("dev-Atr").value) || 0;
-        const s = parseFloat(document.getElementById("dev-s").value) || 0;
-        const fyt = parseFloat(document.getElementById("dev-fyt").value) || 0;
-        const n = Math.max(1, parseInt(document.getElementById("dev-n").value, 10) || 1);
-
-        if (calcType === "Straight (Basic)") {
-            let html = summaryBlock("Basic development length", `L<sub>db</sub> = ${format(Ldb)} mm`);
-            if (showSteps) {
-                const steps = [
-                    `Equation 8-2: L<sub>db</sub> = 0.5 × α<sub>1</sub> × (f<sub>y</sub> / √f′<sub>c</sub>) × d<sub>b</sub>`,
-                    `α<sub>1</sub> = ${format(a1, 2)} (${topBar ? "top reinforcement" : "non-top reinforcement"})`,
-                    `f′<sub>c</sub> = min(${format(fc)}, 70) = ${format(fcCap)} MPa`,
-                    `Computed L<sub>db</sub> = ${format(Ldb)} mm`
-                ];
-                html += stepList("Working", steps);
-            }
-            if (plainComp) {
-                const Lplain = format(2.0 * Ldb);
-                html += noteBlock(`Plain bars/wires in compression (Clause 8.6.6): provide L = 2 × L<sub>db</sub> = ${Lplain} mm.`, "info");
-            }
-            renderDevReport(html, false);
-            return;
-        }
-
-        if (calcType === "Straight (Refined)") {
-            const refined = ldRefinedStraight(db, fy, fc, topBar, As, Areq, cm, Atr, s, fyt, n);
-            if (!Number.isFinite(refined.value)) {
-                window.alert("Unable to compute refined development length. Check input parameters.");
-                return;
-            }
-            const ratio = (As > 0 && Areq > 0) ? (Areq / As) : null;
-            let html = summaryBlock("Refined development length", `L<sub>d</sub> = ${format(refined.value)} mm`);
-
-            if (showSteps) {
-                const stepItems = [
-                    `Equation 8-3: L<sub>d</sub> = (α<sub>b</sub> / (α<sub>c</sub> α<sub>d</sub>)) × L<sub>db</sub> ≥ 300 mm`,
-                    ratio !== null
-                        ? `α<sub>b</sub> = min(1.0, ${format(Areq)} / ${format(As)}) = ${format(Math.min(1, ratio), 3)}`
-                        : `α<sub>b</sub> = 1.0 (A<sub>req</sub> ≤ 0 or A<sub>s</sub> ≤ 0)`
-                ];
-                stepItems.push(`α<sub>c</sub> = 1 + 0.5 (${format(cm)} / ${format(db)} − 1.5) = ${format(refined.aC, 3)}`);
-                stepItems.push(`α<sub>d</sub> = 1 + (${format(Atr)} / ${format(s)}) (${format(fyt)} / (80 × ${n} × ${format(db)})) = ${format(refined.aD, 3)}`);
-                stepItems.push(`Result: L<sub>d</sub> = ${format(refined.value)} mm`);
-                html += stepList("Working", stepItems);
-            }
-
-            const tableRows = [
-                ["L<sub>db</sub>", `${format(refined.basic)} mm`],
-                ["α<sub>b</sub>", format(refined.aB, 3)],
-                ["α<sub>c</sub>", format(refined.aC, 3)],
-                ["α<sub>d</sub>", format(refined.aD, 3)]
-            ];
-            html += coeffTable(tableRows);
-
-            if (refined.value <= 300.001) {
-                html += noteBlock("Minimum limit of 300 mm governs for this calculation.", "info");
-            }
-            if (plainComp) {
-                html += noteBlock(`Plain bars/wires in compression (Clause 8.6.6): provide L = 2 × L<sub>d</sub> = ${format(2.0 * refined.value)} mm.`, "info");
-            }
-            renderDevReport(html, false);
-            return;
-        }
-
-        if (calcType === "Hooked (Standard)") {
-            const barLe32 = document.getElementById("hook-d32").checked;
-            const sideCover = document.getElementById("hook-side").checked;
-            const tailCover = document.getElementById("hook-tail").checked;
-            const confined = document.getElementById("hook-confined").checked;
-            const hooked = ldhHooked(db, fy, fc, As, Areq, barLe32, sideCover, tailCover, confined);
-            if (!Number.isFinite(hooked.value)) {
-                window.alert("Unable to compute hooked development length. Check input parameters.");
-                return;
-            }
-            const ratio = (As > 0 && Areq > 0) ? (Areq / As) : null;
-            const eightDb = 8 * db;
-
-            let html = summaryBlock("Hooked development length", `L<sub>dh</sub> = ${format(hooked.value)} mm`);
-
-            if (showSteps) {
-                const steps = [
-                    `Equation 8-12: L<sub>dh</sub> = max(8 d<sub>b</sub>, 0.24 × α<sub>b</sub> α<sub>1</sub> α<sub>2</sub> × (f<sub>y</sub>/√f′<sub>c</sub>) × d<sub>b</sub>)`,
-                    `8 d<sub>b</sub> = 8 × ${format(db)} = ${format(eightDb)} mm`,
-                    `0.24 × ${format(hooked.aB, 3)} × ${format(hooked.a1, 2)} × ${format(hooked.a2, 2)} × (${format(fy)} / √${format(hooked.fcUsed)}) × ${format(db)} = ${format(hooked.base)} mm`,
-                    `Result: L<sub>dh</sub> = ${format(hooked.value)} mm`
-                ];
-                html += stepList("Working", steps);
-            }
-
-            const tableRows = [
-                ["f′<sub>c</sub>", `${format(fc)} MPa → capped ${format(hooked.fcUsed)} MPa`],
-                ["α<sub>b</sub>", ratio !== null ? format(Math.min(1, ratio), 3) : "1.000"],
-                ["α<sub>1</sub>", `${format(hooked.a1, 2)} ${barLe32 && sideCover ? "(≤32 mm & cover ≥60 mm)" : "(other detailing)"}`],
-                ["α<sub>2</sub>", `${format(hooked.a2, 2)} ${confined ? "(closed stirrups/hoops)" : "(no confinement adjustment)"}`]
-            ];
-            html += coeffTable(tableRows);
-
-            html += noteBlock("Clause 8.6.6 (plain bar compression) does not apply to hooked bars in tension.");
-            if (!tailCover) {
-                html += noteBlock("Tail cover input < 40 mm. Confirm hook detailing compliance on drawings.", "warning");
-            }
-            renderDevReport(html, true);
-            return;
-        }
-
-        renderDevReport('<div class="note">Unsupported calculation type selected.</div>', false);
+    document.getElementById('calcType').addEventListener('change', function() {
+      document.getElementById('refinedParams').style.display = this.value === 'refined' ? 'grid' : 'none';
+      document.getElementById('hookParams').style.display = this.value === 'hook' ? 'grid' : 'none';
     });
-
-    devReset.addEventListener("click", () => {
-        devForm.reset();
-        updateHookVisibility();
-        devResultCard.hidden = true;
-        devOutput.innerHTML = "";
-        hookFigure.classList.add("hidden");
-        hookFigure.setAttribute("aria-hidden", "true");
-        devPdfButton.disabled = true;
-    });
-
-    devTypeField.addEventListener("change", updateHookVisibility);
-    updateHookVisibility();
-
-    function generatePdf(node, filename) {
-        if (!window.html2pdf) {
-            window.alert("PDF generator failed to load. Please check your internet connection.");
-            return;
-        }
-        const opt = {
-            filename,
-            margin: 10,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        };
-        window.html2pdf().set(opt).from(node).save();
-    }
-
-    devPdfButton.addEventListener("click", () => {
-        if (devResultCard.hidden) {
-            window.alert("Generate a report before exporting to PDF.");
-            return;
-        }
-        generatePdf(devResultCard, "nzs3101_development_length.pdf");
-    });
-
-    bendForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const type = document.getElementById("bend-type").value;
-        const db = parseFloat(document.getElementById("bend-db").value);
-        const fy = parseFloat(document.getElementById("bend-fy").value);
-        const galv = document.getElementById("bend-galv").checked;
-        const deformed = document.getElementById("bend-deformed").checked;
-        const showSteps = document.getElementById("bend-show-steps").checked;
-
-        if (Number.isNaN(db) || db <= 0) {
-            window.alert("Enter a valid bar diameter.");
-            return;
-        }
-
-        function minBendMainBar(dbLocal, galvLocal) {
-            if (galvLocal) {
-                if (dbLocal <= 16) {
-                    return 5 * dbLocal;
-                }
-                if (dbLocal >= 20) {
-                    return 8 * dbLocal;
-                }
-            }
-            if (dbLocal >= 6 && dbLocal <= 20) {
-                return 5 * dbLocal;
-            }
-            if (dbLocal >= 24 && dbLocal <= 40) {
-                return 6 * dbLocal;
-            }
-            return 6 * dbLocal;
-        }
-
-        function minBendStirrup(dbLocal, deformedLocal, galvLocal) {
-            if (galvLocal) {
-                if (dbLocal <= 16) {
-                    return 5 * dbLocal;
-                }
-                if (dbLocal >= 20) {
-                    return 8 * dbLocal;
-                }
-            }
-            if (dbLocal >= 6 && dbLocal <= 20) {
-                return (deformedLocal ? 4 : 2) * dbLocal;
-            }
-            if (dbLocal >= 24 && dbLocal <= 40) {
-                return (deformedLocal ? 6 : 3) * dbLocal;
-            }
-            return (deformedLocal ? 6 : 3) * dbLocal;
-        }
-
-        const lines = [];
-        if (type === "Main bar") {
-            const di = minBendMainBar(db, galv);
-            lines.push(`Main bar inside bend diameter d<sub>i</sub> ≥ ${format(di)} mm`);
-            if (showSteps) {
-                if (galv && (db <= 16 || db >= 20)) {
-                    const mult = db <= 16 ? 5 : 8;
-                    lines.push(`Galvanized override (8.4.2.4): d<sub>i</sub> ≥ ${mult} × d<sub>b</sub> = ${format(di)} mm`);
-                } else if (db >= 6 && db <= 20) {
-                    lines.push("Table 8.1 (6–20 mm): d<sub>i</sub> ≥ 5 d<sub>b</sub>");
-                } else if (db >= 24 && db <= 40) {
-                    lines.push("Table 8.1 (24–40 mm): d<sub>i</sub> ≥ 6 d<sub>b</sub>");
-                } else {
-                    lines.push("Bar diameter outside tabulated range: 6 d<sub>b</sub> adopted.");
-                }
-            }
-            if (!(db >= 6 && db <= 20) && !(db >= 24 && db <= 40)) {
-                lines.push("Note: diameter outside table range – conservative 6 d<sub>b</sub> applied.");
-            }
-            if (galv) {
-                lines.push("Note: galvanized reinforcement override applied (Clause 8.4.2.4).");
-            }
-        } else {
-            const di = minBendStirrup(db, deformed, galv);
-            lines.push(`Stirrup/Tie inside bend diameter d<sub>i</sub> ≥ ${format(di)} mm`);
-            if (showSteps) {
-                if (galv && (db <= 16 || db >= 20)) {
-                    const mult = db <= 16 ? 5 : 8;
-                    lines.push(`Galvanized override (8.4.2.4): d<sub>i</sub> ≥ ${mult} × d<sub>s</sub> = ${format(di)} mm`);
-                } else if (db >= 6 && db <= 20) {
-                    const mult = deformed ? 4 : 2;
-                    lines.push(`Table 8.2 (6–20 mm, ${deformed ? "deformed" : "plain"}): d<sub>i</sub> ≥ ${mult} d<sub>s</sub>`);
-                } else if (db >= 24 && db <= 40) {
-                    const mult = deformed ? 6 : 3;
-                    lines.push(`Table 8.2 (24–40 mm, ${deformed ? "deformed" : "plain"}): d<sub>i</sub> ≥ ${mult} d<sub>s</sub>`);
-                } else {
-                    const mult = deformed ? 6 : 3;
-                    lines.push(`Outside table range: default ${mult} d<sub>s</sub> applied.`);
-                }
-            }
-            if (!(db >= 6 && db <= 20) && !(db >= 24 && db <= 40)) {
-                lines.push("Note: diameter outside table range – default multipliers used.");
-            }
-            if (galv) {
-                lines.push("Note: galvanized reinforcement override applied (Clause 8.4.2.4).");
-            }
-        }
-
-        bendOutput.innerHTML = lines.join("\n");
-        bendResultCard.hidden = false;
-        bendPdfButton.disabled = false;
-    });
-
-    bendReset.addEventListener("click", () => {
-        bendForm.reset();
-        bendResultCard.hidden = true;
-        bendOutput.textContent = "";
-        bendPdfButton.disabled = true;
-    });
-
-    bendPdfButton.addEventListener("click", () => {
-        if (bendResultCard.hidden) {
-            window.alert("Generate a report before exporting to PDF.");
-            return;
-        }
-        generatePdf(bendResultCard, "nzs3101_bend_diameter.pdf");
-    });
-</script>
-
-
-
-</div></div></div><div class="ed-element ed-reference ed-reference-container footer preset-footer-frigg-v2-default" id="ed-1157450945" data-reference="1049323935"><div class="inner"><div class="ed-element ed-container wv-boxed wv-spacer footer-frigg-content" id="ed-1049323938"><div class="inner"><div class="ed-element ed-container footer-frigg-box footer-frigg-box-flex wv-overflow_hidden" id="ed-1049323941"><div class="inner"><div class="ed-element ed-logo" id="ed-1049323944"><img src="/images/200%2C1103x371%2B209%2B69/19756605/Logo_v1.2.1-NwNV-qVOVhlVCPUypH4uvQ.png" alt="" srcset="/images/400%2C1103x371%2B209%2B69/19756605/Logo_v1.2.1-NwNV-qVOVhlVCPUypH4uvQ.png 2x"></div><div class="ed-element ed-text custom-theme" id="ed-1049323947"><p><em>NZ-focused engineering tools aligned to local standards.</em></p></div><div class="ed-element ed-spacer" id="ed-1049323950"><div style="height: 16px;" class="space"></div></div><div class="ed-element ed-text custom-theme" id="ed-1049323962"><p><i class="svg-text-icon fa-solid-lightbulb-on fr-deletable"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M69.3 4l48 32c11 7.4 14 22.3 6.7 33.3s-22.3 14 -33.3 6.7l-48 -32c-11 -7.4 -14 -22.3 -6.7 -33.3S58.3 -3.3 69.3 4zM597.3 44l-48 32c-11 7.4 -25.9 4.4 -33.3 -6.7s-4.4 -25.9 6.7 -33.3l48 -32c11 -7.4 25.9 -4.4 33.3 6.7s4.4 25.9 -6.7 33.3zM24 160H88c13.3 0 24 10.7 24 24s-10.7 24 -24 24H24c-13.3 0 -24 -10.7 -24 -24s10.7 -24 24 -24zm528 0h64c13.3 0 24 10.7 24 24s-10.7 24 -24 24H552c-13.3 0 -24 -10.7 -24 -24s10.7 -24 24 -24zM117.3 332l-48 32c-11 7.4 -25.9 4.4 -33.3 -6.7s-4.4 -25.9 6.7 -33.3l48 -32c11 -7.4 25.9 -4.4 33.3 6.7s4.4 25.9 -6.7 33.3zm432 -39.9l48 32c11 7.4 14 22.3 6.7 33.3s-22.3 14 -33.3 6.7l-48 -32c-11 -7.4 -14 -22.3 -6.7 -33.3s22.3 -14 33.3 -6.7zm-100.1 5.7c-19.8 27.1 -39.7 54.4 -49.2 86.2H240c-9.6 -31.9 -29.5 -59.1 -49.2 -86.2l0 0 0 0c-5.2 -7.1 -10.4 -14.2 -15.4 -21.4C155.6 247.9 144 213.3 144 176C144 78.8 222.8 0 320 0s176 78.8 176 176c0 37.3 -11.6 71.9 -31.4 100.3c-5 7.2 -10.2 14.3 -15.4 21.4l0 0 0 0zM400 432c0 44.2 -35.8 80 -80 80s-80 -35.8 -80 -80V416H400v16zM320 96c8.8 0 16 -7.2 16 -16s-7.2 -16 -16 -16c-61.9 0 -112 50.1 -112 112c0 8.8 7.2 16 16 16s16 -7.2 16 -16c0 -44.2 35.8 -80 80 -80z"></path></svg> </i>Feedback? Use <a href="/feedback" title=""><em>Feedback / Request a Tool</em>&nbsp;</a></p></div><div class="ed-element ed-spacer" id="ed-1049323959"><div class="space"></div></div></div></div><div class="ed-element ed-container footer-frigg-box footer-frigg-box-shrink wv-overflow_hidden" id="ed-1049323965"><div class="inner"><div class="ed-element ed-headline custom-theme" id="ed-1049323968"><h3><strong>Navigation</strong></h3></div><div class="ed-element ed-spacer" id="ed-1049323971"><div style="height: 16px;" class="space"></div></div><nav class="ed-element ed-menu wv-custom" id="ed-1049323974"><ul class="menu-level-0"><li class="first"><a href="/#ed-1022468155" class="wv-link-elm first">Home</a></li><li><a href="/#ed-1014625396" class="wv-link-elm">About</a></li><li class="wv-page-18317453-en"><a href="/tools" class="wv-page-18317453-en">Tools</a></li><li class="wv-page-18608467-en"><a href="/forum" class="wv-page-18608467-en">Forum</a></li><li class="wv-page-18607534-en end"><a href="/feedback" class="wv-page-18607534-en last">Feedback / Request a Tool</a></li></ul></nav></div></div><div class="ed-element ed-container footer-frigg-box footer-frigg-box-shrink" id="ed-1049323977"><div class="inner"><div class="ed-element ed-headline custom-theme" id="ed-1049323980"><h3>Legal</h3></div><div class="ed-element ed-spacer" id="ed-1049323983"><div style="height: 16px;" class="space"></div></div><nav class="ed-element ed-menu wv-custom" id="ed-1049323986"><ul class="menu-level-0"><li class="wv-page-18242623-en first"><a href="/legal/terms" class="wv-page-18242623-en first">Terms of Use</a></li><li class="wv-page-18242626-en"><a href="/legal/privacy" class="wv-page-18242626-en">Privacy Policy</a></li><li class="wv-page-18242626-en"><a href="/legal/privacy" class="wv-page-18242626-en">Cookies</a></li><li class="wv-page-18606044-en end"><a href="/changelog" class="wv-page-18606044-en last">Changelog</a></li></ul></nav></div></div><div class="ed-element ed-separator" id="ed-1049323989"><hr class="bg-primary"></div><div class="ed-element ed-text custom-theme" id="ed-1049323992"><p>© CalforYa 2025. All rights reserved.</p></div><div class="ed-element ed-text custom-theme" id="ed-1049462146"><p style="text-align: right;"><em>Made in New Zealand · Beta in progress</em></p></div></div></div></div></div><script src="/webcard/static/app.bundle.1768398969.js"></script><script src="/js/custom.251101051103.js"></script></body>
+  </script>
+</body>
 </html>

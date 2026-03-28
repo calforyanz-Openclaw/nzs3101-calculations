@@ -9,7 +9,7 @@
     :root { --ink: #0f172a; --muted: #5b6474; --accent: #1f6feb; --card: rgba(255,255,255,0.85); --shadow: 0 20px 50px rgba(15,23,42,0.15); }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: linear-gradient(160deg, #f5e8d4 0%, #e4d3c1 50%, #c7b098 100%); font-family: 'Space Grotesk', sans-serif; color: var(--ink); padding: 2rem 1rem; }
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { max-width: 950px; margin: 0 auto; }
     h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem,4vw,2.5rem); margin: 0 0 0.5rem; color: var(--ink); }
     .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
     .card { background: var(--card); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
@@ -39,28 +39,45 @@
     td:first-child, th:first-child { text-align: left; }
     .note { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
     .formula-box { background: #f8f8f8; padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; }
+    .highlight { background: #fff3cd; padding: 0.5rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.85rem; }
+    .location-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>AS/NZS 1170.5 Response Spectrum</h1>
-    <p class="subtitle">Generate seismic response spectrum per AS/NZS 1170.5:2024 (based on NZS 1170.5:2004 Table 3.1)</p>
+    <p class="subtitle">Generate seismic response spectrum per NZS 1170.5:2004 with ductility and performance factors</p>
 
     <div class="card">
-      <h2>Site & Hazard</h2>
+      <h2>Location & Hazard Factor Z</h2>
       <div class="form-grid">
         <div class="field">
-          <label>Hazard Factor Z</label>
-          <select id="Z">
-            <option value="0.13">Z = 0.13 (Very Low)</option>
-            <option value="0.20">Z = 0.20 (Low)</option>
-            <option value="0.27">Z = 0.27 (Medium-Low)</option>
-            <option value="0.36" selected>Z = 0.36 (Medium)</option>
-            <option value="0.48">Z = 0.48 (High)</option>
-            <option value="0.60">Z = 0.60 (Very High)</option>
-            <option value="0.80">Z = 0.80 (Extreme)</option>
+          <label>Select Location</label>
+          <select id="location" onchange="updateZ()">
+            <option value="">-- Select Region --</option>
+            <option value="0.13">Auckland (Low Seismicity)</option>
+            <option value="0.13">Northland</option>
+            <option value="0.20">Waikato / BOP</option>
+            <option value="0.27">Taupo / Rotorua</option>
+            <option value="0.36" selected>Wellington</option>
+            <option value="0.36"> Christchurch</option>
+            <option value="0.48">Palmerston North</option>
+            <option value="0.60">Napier / Hastings</option>
+            <option value="0.80">Greymouth / West Coast</option>
+            <option value="custom">Custom Z Value</option>
           </select>
+          <p class="location-note">Based on NZS 1170.5:2004 Table 3.2</p>
         </div>
+        <div class="field">
+          <label>Hazard Factor Z</label>
+          <input type="number" id="Z" value="0.36" step="0.01" min="0.13" max="0.80">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Site & Structural Parameters</h2>
+      <div class="form-grid">
         <div class="field">
           <label>Subsoil Class</label>
           <select id="subsoil">
@@ -78,6 +95,39 @@
         <div class="field">
           <label>Damping Ratio (%)</label>
           <input type="number" id="damping" value="5" step="0.5" min="0.5">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ductility & Performance Factors</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Ductility Factor μ</label>
+          <select id="mu">
+            <option value="1.0">μ = 1.0 (Elastic / Brittle)</option>
+            <option value="1.5">μ = 1.5 (Limited Ductility)</option>
+            <option value="2.0">μ = 2.0 (Moderate Ductility)</option>
+            <option value="3.0" selected>μ = 3.0 (Ductile)</option>
+            <option value="4.0">μ = 4.0 (Highly Ductile)</option>
+            <option value="6.0">μ = 6.0 (Very High Ductility)</option>
+          </select>
+          <p class="location-note">Per NZS 1170.5 Clause 4.3</p>
+        </div>
+        <div class="field">
+          <label>Performance Factor Sp</label>
+          <select id="Sp">
+            <option value="0.67">Sp = 0.67 (Ductile)</option>
+            <option value="0.77">Sp = 0.77 (Limited Ductility)</option>
+            <option value="0.90" selected>Sp = 0.90 (Limited Plastic)</option>
+            <option value="1.00">Sp = 1.00 (Elastic)</option>
+          </select>
+          <p class="location-note">Per NZS 1170.5 Clause 4.4</p>
+        </div>
+        <div class="field">
+          <label>Period T1 (s)</label>
+          <input type="number" id="T1" value="0.8" step="0.1" min="0.1">
+          <p class="location-note">Used for kμ calculation</p>
         </div>
       </div>
     </div>
@@ -106,60 +156,71 @@
       <div class="result-box">
         <h3>Spectral Results</h3>
         <div class="formula-box">
-          C(T) = Ch(T) × Z × Ru × N(T,D) per NZS 1170.5 Clause 3.1.1<br>
-          Z × Ru limited to ≤ 0.7
+          <strong>Elastic:</strong> C(T) = Ch(T) × Z × Ru<br>
+          <strong>Design:</strong> Cd(T) = Sp × C(T) × kμ<br>
+          <strong>kμ = </strong><span id="kmuDisplay">-</span> (per NZS 1170.5 Clause 5.2.1)
         </div>
+        
         <div class="result-grid">
           <div class="result-item"><label>Z × Ru (limited)</label><span id="ZRu">-</span></div>
-          <div class="result-item"><label>Ch(0.0s)</label><span id="Ch0">-</span></div>
-          <div class="result-item"><label>Ch(0.4s)</label><span id="Ch04">-</span></div>
-          <div class="result-item"><label>Ch(1.0s)</label><span id="Ch10">-</span></div>
+          <div class="result-item"><label>kμ (ductility)</label><span id="kmu">-</span></div>
+          <div class="result-item"><label>Sp</label><span id="SpVal">-</span></div>
+          <div class="result-item"><label>Cd(T1) (g)</label><span id="CdT1">-</span></div>
         </div>
+        
+        <div class="highlight" id="minCheck"></div>
+        
         <canvas id="chart"></canvas>
         <div class="table-wrap">
           <table id="spectrumTable">
-            <thead><tr><th>T (s)</th><th>Ch(T)</th><th>C(T) (g)</th></tr></thead>
+            <thead><tr><th>T (s)</th><th>Ch(T)</th><th>C(T) (g)</th><th>Cd(T) (g)</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
-      <p class="note">Based on NZS 1170.5:2004 Table 3.1. Verify with latest standard for project work.</p>
+      <p class="note">Based on NZS 1170.5:2004 Clauses 3.1, 4.3, 4.4, 5.2. Verify with latest standard for project work.</p>
     </div>
   </div>
 
   <script>
+    function updateZ() {
+      const location = document.getElementById('location').value;
+      if (location && location !== 'custom') {
+        document.getElementById('Z').value = location;
+      }
+    }
+
     // NZS 1170.5:2004 Table 3.1 - Spectral Shape Factor Ch(T)
-    // These are the actual values from the standard
     const ChTable = {
-      A: [  // Strong rock
+      A: [
         {T:0.0, Ch:1.89}, {T:0.1, Ch:1.89}, {T:0.2, Ch:1.89}, {T:0.3, Ch:1.89},
         {T:0.4, Ch:1.89}, {T:0.5, Ch:1.60}, {T:0.6, Ch:1.40}, {T:0.7, Ch:1.24},
         {T:0.8, Ch:1.12}, {T:0.9, Ch:1.03}, {T:1.0, Ch:0.95}, {T:1.5, Ch:0.70},
         {T:2.0, Ch:0.53}, {T:2.5, Ch:0.42}, {T:3.0, Ch:0.35}, {T:3.5, Ch:0.26},
         {T:4.0, Ch:0.20}, {T:4.5, Ch:0.16}
       ],
-      B: [  // Rock
+      B: [
         {T:0.0, Ch:2.36}, {T:0.1, Ch:2.36}, {T:0.2, Ch:2.36}, {T:0.3, Ch:2.36},
         {T:0.4, Ch:2.36}, {T:0.5, Ch:2.00}, {T:0.6, Ch:1.74}, {T:0.7, Ch:1.55},
         {T:0.8, Ch:1.41}, {T:0.9, Ch:1.29}, {T:1.0, Ch:1.19}, {T:1.5, Ch:0.88},
         {T:2.0, Ch:0.66}, {T:2.5, Ch:0.53}, {T:3.0, Ch:0.44}, {T:3.5, Ch:0.32},
         {T:4.0, Ch:0.25}, {T:4.5, Ch:0.20}
       ],
-      C: [  // Shallow soil
+      C: [
         {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
         {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:2.84}, {T:0.7, Ch:2.53},
         {T:0.8, Ch:2.29}, {T:0.9, Ch:2.09}, {T:1.0, Ch:1.93}, {T:1.5, Ch:1.43},
         {T:2.0, Ch:1.07}, {T:2.5, Ch:0.86}, {T:3.0, Ch:0.71}, {T:3.5, Ch:0.52},
         {T:4.0, Ch:0.40}, {T:4.5, Ch:0.32}
       ],
-      D: [  // Deep or soft soil
+      D: [
         {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
         {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:3.00}, {T:0.7, Ch:3.00},
         {T:0.8, Ch:3.00}, {T:0.9, Ch:3.00}, {T:1.0, Ch:3.00}, {T:1.5, Ch:2.21},
         {T:2.0, Ch:1.66}, {T:2.5, Ch:1.33}, {T:3.0, Ch:1.11}, {T:3.5, Ch:0.81},
         {T:4.0, Ch:0.62}, {T:4.5, Ch:0.49}
       ],
-      E: [  // Very soft soil (limited data)
+      E: [
         {T:0.0, Ch:3.00}, {T:0.1, Ch:3.00}, {T:0.2, Ch:3.00}, {T:0.3, Ch:3.00},
         {T:0.4, Ch:3.00}, {T:0.5, Ch:3.00}, {T:0.6, Ch:3.00}, {T:0.7, Ch:3.00},
         {T:0.8, Ch:3.00}, {T:0.9, Ch:3.00}, {T:1.0, Ch:3.00}, {T:1.5, Ch:2.50},
@@ -168,21 +229,29 @@
       ]
     };
 
-    // Linear interpolation function
     function interpolateCh(T, table) {
-      // Handle T <= first point
       if (T <= table[0].T) return table[0].Ch;
-      // Handle T >= last point
       if (T >= table[table.length - 1].T) return table[table.length - 1].Ch;
-      
-      // Find surrounding points
       for (let i = 0; i < table.length - 1; i++) {
         if (T >= table[i].T && T <= table[i+1].T) {
           const ratio = (T - table[i].T) / (table[i+1].T - table[i].T);
           return table[i].Ch + ratio * (table[i+1].Ch - table[i].Ch);
         }
       }
-      return table[0].Ch; // Fallback
+      return table[0].Ch;
+    }
+
+    // Calculate kμ per NZS 1170.5 Clause 5.2.1
+    function calculateKmu(T1, mu, subsoil) {
+      // For site subsoil classes A, B, C, D
+      if (subsoil !== 'E') {
+        if (T1 >= 0.7) return mu;
+        return (mu - 1) * T1 / 0.7 + 1;
+      } else {
+        // For site subsoil class E
+        if (T1 >= 1.0 || mu < 1.5) return mu;
+        return (mu - 1) * T1 / 0.5 + 1;
+      }
     }
 
     function calculate() {
@@ -190,48 +259,73 @@
       const subsoil = document.getElementById('subsoil').value;
       let Ru = parseFloat(document.getElementById('Ru').value);
       const damping = parseFloat(document.getElementById('damping').value);
+      const mu = parseFloat(document.getElementById('mu').value);
+      const Sp = parseFloat(document.getElementById('Sp').value);
+      const T1 = parseFloat(document.getElementById('T1').value);
       const Tmin = parseFloat(document.getElementById('Tmin').value);
       const Tmax = parseFloat(document.getElementById('Tmax').value);
       const dT = parseFloat(document.getElementById('dT').value);
 
       const table = ChTable[subsoil];
 
-      // Limit Z × Ru to 0.7 per NZS 1170.5 Clause 3.1.1
+      // Limit Z × Ru to 0.7 per Clause 3.1.1
       const ZRuLimited = Math.min(Z * Ru, 0.7);
       
-      // Damping factor per Clause 3.1.6 (simplified)
-      // For damping > 5%, reduce spectral acceleration
+      // Damping factor (simplified)
       const kD = damping <= 5 ? 1.0 : (0.67 + 0.33 * (5 / damping));
+
+      // Calculate kμ
+      // For kμ calculation, T1 cannot be less than 0.4s per Clause 5.2
+      const T1_kmu = Math.max(T1, 0.4);
+      const kmu = calculateKmu(T1_kmu, mu, subsoil);
+
+      // Minimum check per Clause 5.2.1 Eq 5.2(2)
+      const minCd1 = (Z / 20 + 0.02) * Ru;
+      const minCd2 = 0.03 * Ru;
+      const minCd = Math.max(minCd1, minCd2);
 
       const data = [];
       for (let T = Tmin; T <= Tmax; T += dT) {
         const T_value = Math.max(T, 0.01);
         
-        // Get Ch(T) from Table 3.1 with interpolation
-        let Ch = interpolateCh(T_value, table);
+        // Use T for kμ calculation, but use max(0.4, T) per standard
+        const T_kmu = Math.max(T_value, 0.4);
+        const kmu_T = calculateKmu(T_kmu, mu, subsoil);
         
-        // Apply damping factor
+        let Ch = interpolateCh(T_value, table);
         Ch = Ch * kD;
         
-        // Calculate C(T) = Ch(T) × Z × Ru
+        // Elastic spectrum
         const C = ZRuLimited * Ch;
         
-        data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), C: C.toFixed(4) });
+        // Design spectrum with ductility
+        const Cd = Sp * C * kmu_T;
+        
+        data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), C: C.toFixed(4), Cd: Cd.toFixed(4) });
       }
 
       // Get key values
       const Ch0 = interpolateCh(0.0, table).toFixed(2);
-      const Ch04 = interpolateCh(0.4, table).toFixed(2);
-      const Ch10 = interpolateCh(1.0, table).toFixed(2);
+      const Cd_T1 = Sp * ZRuLimited * interpolateCh(T1, table) * kmu;
 
       document.getElementById('ZRu').textContent = ZRuLimited.toFixed(3);
-      document.getElementById('Ch0').textContent = Ch0;
-      document.getElementById('Ch04').textContent = Ch04;
-      document.getElementById('Ch10').textContent = Ch10;
+      document.getElementById('kmu').textContent = kmu.toFixed(2);
+      document.getElementById('SpVal').textContent = Sp.toFixed(2);
+      document.getElementById('CdT1').textContent = Cd_T1.toFixed(4);
+      document.getElementById('kmuDisplay').textContent = kmu.toFixed(2);
+
+      // Minimum check display
+      const minCheckDiv = document.getElementById('minCheck');
+      const useMin = minCd > Cd_T1;
+      if (useMin) {
+        minCheckDiv.innerHTML = `⚠️ Note: Cd(T1) limited by minimum per Clause 5.2(2): ${minCd.toFixed(4)}g (≥ (Z/20+0.02)Ru = ${minCd1.toFixed(4)}, ≥ 0.03Ru = ${minCd2.toFixed(4)})`;
+      } else {
+        minCheckDiv.innerHTML = `✓ Cd(T1) > minimum (${minCd.toFixed(4)}g)`;
+      }
 
       // Update table
       const tbody = document.querySelector('#spectrumTable tbody');
-      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.C}</td></tr>`).join('');
+      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.C}</td><td>${d.Cd}</td></tr>`).join('');
 
       // Draw chart
       drawChart(data);
@@ -249,7 +343,10 @@
       ctx.fillStyle = '#f8f8f8';
       ctx.fillRect(0, 0, w, h);
       
+      // Plot both elastic and design spectra
       const maxC = Math.max(...data.map(d => parseFloat(d.C)));
+      const maxCd = Math.max(...data.map(d => parseFloat(d.Cd)));
+      const maxVal = Math.max(maxC, maxCd);
       const maxT = Math.max(...data.map(d => parseFloat(d.T)));
       
       const pad = 50;
@@ -265,18 +362,38 @@
         ctx.stroke();
       }
       
-      // Spectrum curve
-      ctx.strokeStyle = '#1f6feb';
-      ctx.lineWidth = 2.5;
+      // Elastic spectrum (dashed, lighter)
+      ctx.strokeStyle = '#888';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 5]);
       ctx.beginPath();
-      
       data.forEach((d, i) => {
         const x = pad + (parseFloat(d.T) / maxT) * (w - pad - 20);
-        const y = h - pad - (parseFloat(d.C) / maxC) * (h - pad - 20);
+        const y = h - pad - (parseFloat(d.C) / maxVal) * (h - pad - 20);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Design spectrum (solid, accent color)
+      ctx.strokeStyle = '#1f6feb';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      data.forEach((d, i) => {
+        const x = pad + (parseFloat(d.T) / maxT) * (w - pad - 20);
+        const y = h - pad - (parseFloat(d.Cd) / maxVal) * (h - pad - 20);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      
+      // Legend
+      ctx.font = '11px Arial';
+      ctx.fillStyle = '#888';
+      ctx.fillText('--- Elastic C(T)', pad + 10, pad - 10);
+      ctx.fillStyle = '#1f6feb';
+      ctx.fillText('— Design Cd(T)', pad + 100, pad - 10);
       
       // Axes
       ctx.strokeStyle = '#333';
@@ -289,29 +406,21 @@
       
       // Labels
       ctx.fillStyle = '#333';
-      ctx.font = '12px Space Grotesk, Arial';
+      ctx.font = '12px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('Period T (s)', w / 2, h - 10);
       ctx.save();
       ctx.translate(15, h / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText('Spectral Acceleration C(T) (g)', 0, 0);
+      ctx.fillText('Spectral Acceleration (g)', 0, 0);
       ctx.restore();
       
       // Y-axis values
       ctx.textAlign = 'right';
       for (let i = 0; i <= 5; i++) {
-        const val = (i / 5 * maxC).toFixed(2);
+        const val = (i / 5 * maxVal).toFixed(2);
         const y = pad + (i / 5) * (h - pad - 20);
         ctx.fillText(val, pad - 8, y + 4);
-      }
-      
-      // X-axis values
-      ctx.textAlign = 'center';
-      for (let i = 0; i <= 4; i++) {
-        const val = (i / 4 * maxT).toFixed(1);
-        const x = pad + (i / 4) * (w - pad - 20);
-        ctx.fillText(val, x, h - pad + 15);
       }
     }
   </script>

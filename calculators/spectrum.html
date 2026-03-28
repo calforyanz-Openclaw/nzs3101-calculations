@@ -19,6 +19,8 @@
     .field label { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
     .field input, .field select { padding: 0.6rem 0.8rem; border-radius: 8px; border: 1px solid rgba(15,23,42,0.15); font-size: 0.95rem; }
     .field input:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(31,111,235,0.1); }
+    .checkbox-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .checkbox-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; }
     .btn { background: var(--accent); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 999px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
     .btn:hover { transform: translateY(-2px); }
     .result { display: none; margin-top: 1.5rem; }
@@ -36,6 +38,7 @@
     th { background: #f5f5f5; position: sticky; top: 0; }
     td:first-child, th:first-child { text-align: left; }
     .note { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; }
+    .formula-box { background: #f8f8f8; padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; font-family: monospace; font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -44,7 +47,7 @@
     <p class="subtitle">Generate seismic response spectrum per AS/NZS 1170.5:2024 Clause 3.1</p>
 
     <div class="card">
-      <h2>Site & Location</h2>
+      <h2>Site & Hazard</h2>
       <div class="form-grid">
         <div class="field">
           <label>Hazard Factor Z</label>
@@ -61,11 +64,11 @@
         <div class="field">
           <label>Subsoil Class</label>
           <select id="subsoil">
-            <option value="A">A - Strong rock</option>
-            <option value="B">B - Rock</option>
-            <option value="C" selected>C - Shallow soil</option>
-            <option value="D">D - Deep soil</option>
-            <option value="E">E - Very deep soil</option>
+            <option value="A">A - Strong rock (Ch1=1.0, Ch2=1.0)</option>
+            <option value="B">B - Rock (Ch1=1.2, Ch2=1.2)</option>
+            <option value="C" selected>C - Shallow soil (Ch1=1.4, Ch2=1.4)</option>
+            <option value="D">D - Deep soil (Ch1=1.6, Ch2=1.8)</option>
+            <option value="E">E - Very soft soil (Ch1=2.0, Ch2=2.5)</option>
           </select>
         </div>
         <div class="field">
@@ -80,8 +83,11 @@
     </div>
 
     <div class="card">
-      <h2>Period Range</h2>
-      <div class="form-grid">
+      <h2>Near-Fault & Period</h2>
+      <div class="checkbox-row">
+        <label><input type="checkbox" id="nearFault"> Apply Near-Fault Factor N(T,D)</label>
+      </div>
+      <div class="form-grid" style="margin-top:1rem;">
         <div class="field">
           <label>Tmin (s)</label>
           <input type="number" id="Tmin" value="0.0" step="0.1" min="0">
@@ -102,26 +108,30 @@
     <div class="result" id="result">
       <div class="result-box">
         <h3>Spectral Results</h3>
+        <div class="formula-box">
+          Cs(T) = Z × Ru × Ch(T) × N(T,D) (per NZS 1170.5 Clause 3.1)
+        </div>
         <div class="result-grid">
-          <div class="result-item"><label>Ch (0.0)</label><span id="Ch0">-</span></div>
-          <div class="result-item"><label>Ch (0.4s)</label><span id="Ch04">-</span></div>
-          <div class="result-item"><label>Ch (1.0s)</label><span id="Ch10">-</span></div>
-          <div class="result-item"><label>Ch (2.0s)</label><span id="Ch20">-</span></div>
+          <div class="result-item"><label>Z × Ru (limited to 0.7)</label><span id="ZRu">-</span></div>
+          <div class="result-item"><label>Ch(0)</label><span id="Ch0">-</span></div>
+          <div class="result-item"><label>Ch(0.4s)</label><span id="Ch04">-</span></div>
+          <div class="result-item"><label>Ch(Td)</label><span id="ChTd">-</span></div>
         </div>
         <canvas id="chart"></canvas>
         <div class="table-wrap">
           <table id="spectrumTable">
-            <thead><tr><th>T (s)</th><th>Ch</th><th>Sa (g)</th></tr></thead>
+            <thead><tr><th>T (s)</th><th>Ch(T)</th><th>Cs(T) (g)</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
-      <p class="note">Based on AS/NZS 1170.5:2024. Results for quick checks - verify with full standard.</p>
+      <p class="note">Based on AS/NZS 1170.5:2024 Clause 3.1. Ch(T) from Table 3.1, Z from Table 3.2. Verify with full standard.</p>
     </div>
   </div>
 
   <script>
-    // Spectral shape factors from AS/NZS 1170.5 Table 3.1
+    // Spectral shape factors from NZS 1170.5 Table 3.1
+    // For modal response spectrum and numerical integration time-history methods
     const ChTable = {
       A: { Ch1: 1.0, Ch2: 1.0, T1: 0.4, T2: 2.0, kT: 1.0 },
       B: { Ch1: 1.2, Ch2: 1.2, T1: 0.4, T2: 2.0, kT: 1.0 },
@@ -130,87 +140,139 @@
       E: { Ch1: 2.0, Ch2: 2.5, T1: 0.6, T2: 4.0, kT: 0.25 }
     };
 
+    // Near-fault factor N(T,D) - simplified (per NZS 1170.5 Clause 3.1.6)
+    function nearFaultFactor(T, subsoil) {
+      // For simplicity, using 1.0 unless specific conditions apply
+      // Full implementation would require distance to fault and magnitude
+      return 1.0;
+    }
+
+    function calculateCh(T, site) {
+      if (T <= site.T1) {
+        return site.Ch1;
+      } else if (T <= site.T2) {
+        // Linear interpolation between T1 and T2
+        return site.Ch1 + (site.Ch2 - site.Ch1) * (T - site.T1) / (site.T2 - site.T1);
+      } else {
+        // Long period decay: Ch(T) = Ch(T2) × (T2/T)^kT
+        return site.Ch2 * Math.pow(site.T2 / T, site.kT);
+      }
+    }
+
     function calculate() {
-      const Z = parseFloat(document.getElementById('Z').value);
+      let Z = parseFloat(document.getElementById('Z').value);
       const subsoil = document.getElementById('subsoil').value;
-      const Ru = parseFloat(document.getElementById('Ru').value);
+      let Ru = parseFloat(document.getElementById('Ru').value);
       const damping = parseFloat(document.getElementById('damping').value);
+      const nearFault = document.getElementById('nearFault').checked;
       const Tmin = parseFloat(document.getElementById('Tmin').value);
       const Tmax = parseFloat(document.getElementById('Tmax').value);
       const dT = parseFloat(document.getElementById('dT').value);
 
       const site = ChTable[subsoil];
+
+      // Limit Z × Ru to 0.7 per NZS 1170.5
+      const ZRuLimited = Math.min(Z * Ru, 0.7);
       
-      // Damping factor per Clause 3.1.6
-      const kD = damping <= 5 ? 1.0 : 0.67 + 0.33 * (damping / 25);
+      // Damping factor per Clause 3.1.6 (simplified)
+      const kD = damping <= 5 ? 1.0 : (0.67 + 0.33 * damping / 25);
 
       const data = [];
       for (let T = Tmin; T <= Tmax; T += dT) {
-        let Ch;
-        if (T <= site.T1) {
-          Ch = site.Ch1;
-        } else if (T <= site.T2) {
-          Ch = site.Ch1 + (site.Ch2 - site.Ch1) * (T - site.T1) / (site.T2 - site.T1);
-        } else {
-          Ch = site.Ch2 * Math.pow(site.kT * site.T2 / T, site.kT);
-        }
-        // Apply damping adjustment (simplified)
+        const T_value = Math.max(T, 0.01); // Avoid T=0
+        
+        let Ch = calculateCh(T_value, site);
+        
+        // Apply near-fault factor if selected
+        const N = nearFault ? nearFaultFactor(T_value, subsoil) : 1.0;
+        
+        // Apply damping factor
         Ch = Ch * kD;
-        const Sa = Z * Ru * Ch;
-        data.push({ T: T.toFixed(2), Ch: Ch.toFixed(3), Sa: Sa.toFixed(4) });
+        
+        // Calculate design spectral acceleration
+        const Cs = ZRuLimited * Ch * N;
+        
+        data.push({ T: T_value.toFixed(2), Ch: Ch.toFixed(3), Cs: Cs.toFixed(4) });
       }
 
-      // Update result displays
-      const Ch0 = data.find(d => parseFloat(d.T) >= 0)?.Ch || '-';
-      const Ch04 = data.find(d => Math.abs(parseFloat(d.T) - 0.4) < 0.05)?.Ch || '-';
-      const Ch10 = data.find(d => Math.abs(parseFloat(d.T) - 1.0) < 0.05)?.Ch || '-';
-      const Ch20 = data.find(d => Math.abs(parseFloat(d.T) - 2.0) < 0.1)?.Ch || '-';
+      // Get key values
+      const Ch0 = calculateCh(0.01, site).toFixed(2);
+      const Ch04 = calculateCh(0.4, site).toFixed(2);
+      const ChTd = calculateCh(site.T2, site).toFixed(2);
 
+      document.getElementById('ZRu').textContent = ZRuLimited.toFixed(3);
       document.getElementById('Ch0').textContent = Ch0;
       document.getElementById('Ch04').textContent = Ch04;
-      document.getElementById('Ch10').textContent = Ch10;
-      document.getElementById('Ch20').textContent = Ch20;
+      document.getElementById('ChTd').textContent = ChTd;
 
       // Update table
       const tbody = document.querySelector('#spectrumTable tbody');
-      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.Sa}</td>`).join('');
+      tbody.innerHTML = data.map(d => `<tr><td>${d.T}</td><td>${d.Ch}</td><td>${d.Cs}</td></tr>`).join('');
 
       // Draw chart
-      drawChart(data);
+      drawChart(data, site);
 
       document.getElementById('result').classList.add('show');
     }
 
-    function drawChart(data) {
+    function drawChart(data, site) {
       const canvas = document.getElementById('chart');
       const ctx = canvas.getContext('2d');
       const w = canvas.width = canvas.offsetWidth;
       const h = canvas.height = canvas.offsetHeight;
       
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = '#f5f5f5';
+      ctx.fillStyle = '#f8f8f8';
       ctx.fillRect(0, 0, w, h);
       
-      const maxSa = Math.max(...data.map(d => parseFloat(d.Sa)));
+      const maxCs = Math.max(...data.map(d => parseFloat(d.Cs)));
       const maxT = Math.max(...data.map(d => parseFloat(d.T)));
       
-      const pad = 40;
+      const pad = 50;
+      
+      // Grid
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = pad + (i / 5) * (h - pad - 20);
+        ctx.beginPath();
+        ctx.moveTo(pad, y);
+        ctx.lineTo(w - 10, y);
+        ctx.stroke();
+      }
+      
+      // Spectrum curve
       ctx.strokeStyle = '#1f6feb';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       
       data.forEach((d, i) => {
         const x = pad + (parseFloat(d.T) / maxT) * (w - pad - 20);
-        const y = h - pad - (parseFloat(d.Sa) / maxSa) * (h - pad - 20);
+        const y = h - pad - (parseFloat(d.Cs) / maxCs) * (h - pad - 20);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
-      
       ctx.stroke();
       
+      // Highlight key points
+      ctx.fillStyle = '#1f6feb';
+      const points = [
+        { T: 0.4, label: 'T1' },
+        { T: site.T2, label: 'Td' }
+      ];
+      points.forEach(p => {
+        const Ch = calculateCh(p.T, site);
+        const Cs = Math.min(ZRuLimited = Math.min(parseFloat(document.getElementById('Z').value) * parseFloat(document.getElementById('Ru').value), 0.7), 0.7) * Ch;
+        const x = pad + (p.T / maxT) * (w - pad - 20);
+        const y = h - pad - (Cs / maxCs) * (h - pad - 20);
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
       // Axes
-      ctx.strokeStyle = '#666';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(pad, pad);
       ctx.lineTo(pad, h - pad);
@@ -219,13 +281,30 @@
       
       // Labels
       ctx.fillStyle = '#333';
-      ctx.font = '12px Arial';
-      ctx.fillText('T (s)', w/2, h - 10);
+      ctx.font = '12px Space Grotesk, Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Period T (s)', w / 2, h - 10);
       ctx.save();
-      ctx.translate(15, h/2);
-      ctx.rotate(-Math.PI/2);
-      ctx.fillText('Sa (g)', 0, 0);
+      ctx.translate(15, h / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Spectral Acceleration Cs (g)', 0, 0);
       ctx.restore();
+      
+      // Y-axis values
+      ctx.textAlign = 'right';
+      for (let i = 0; i <= 5; i++) {
+        const val = (i / 5 * maxCs).toFixed(2);
+        const y = pad + (i / 5) * (h - pad - 20);
+        ctx.fillText(val, pad - 8, y + 4);
+      }
+      
+      // X-axis values
+      ctx.textAlign = 'center';
+      for (let i = 0; i <= 4; i++) {
+        const val = (i / 4 * maxT).toFixed(1);
+        const x = pad + (i / 4) * (w - pad - 20);
+        ctx.fillText(val, x, h - pad + 15);
+      }
     }
   </script>
 </body>

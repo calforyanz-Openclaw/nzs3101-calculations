@@ -170,11 +170,12 @@
       const rho = As / bd * 100;
 
       // Minimum per Clause 7.6.1 (Eq 7-1) and Clause 9.3.2
+      // Use GREATER OF, not sum - per standard
       const sqrtFc = Math.sqrt(fc);
       const minAsEq71 = 0.25 * sqrtFc / fy * bd;  // Eq 7-1
       const minAs018 = 0.0018 * bd;  // Clause 9.3.2 minimum (0.18%)
       
-      // Use the greater of Eq 7-1 and 0.18%
+      // Per NZS 3101: minimum is the greater of Eq 7-1 OR 0.18% bw×d
       const minAs = Math.max(minAsEq71, minAs018);
       
       // Maximum per Clause 7.6.2 (Eq 7-8)

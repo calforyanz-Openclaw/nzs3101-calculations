@@ -156,33 +156,35 @@
       const Aoh = x * y;
       const Ph = 2 * (x + y);
 
-      // Concrete contribution per NZS 3101 Clause 9.4.2.1
-      // Tc = 0.33 × sqrt(f'c) × Aoh × Ph / (3 + 0.58 × sqrt(f'c))
+      // NZS 3101 Clause 7.6.2 and Commentary
+      // Concrete contribution - based on thin-walled tube theory (per NZS 3101 Commentary C7)
+      // Tc = Tcr = 0.44 × Aco × √f'c where Aco ≈ Aoh
       const sqrtFc = Math.sqrt(fc);
-      const Tc = (0.33 * sqrtFc * Aoh * Ph) / (3 + 0.58 * sqrtFc) / 1e6;
+      const Tcr = 0.44 * Aoh * sqrtFc / 1e6; // kN·m (torsional cracking moment)
 
-      // Steel contribution per NZS 3101 Clause 9.4.2.2
-      // Ts = (Ao × Av × fy × cotθ) / s, with θ = 45° for thin sections
-      const Ao = 0.85 * Aoh;
-      const Av = legs * Math.PI * ds * ds / 4;
-      const Ts = (Ao * Av * fy * 1) / s / 1e6;
+      // Steel contribution per NZS 3101 Eq 7-11(a)
+      // Ts = 2 × Ao × At × fy × cot(θ) / s, where θ = 35-55° (use 45° default)
+      const Ao = 0.85 * Aoh; // equivalent wall thickness area
+      const At = legs * Math.PI * ds * ds / 4; // area of stirrups
+      const cotTheta = 1; // for 45° angle
+      const Ts = (2 * Ao * At * fy * cotTheta) / s / 1e6; // kN·m
 
       // Nominal torsional capacity
-      const Tn = Tc + Ts;
+      const Tn = Tcr + Ts;
 
       // Torsional shear stress per Clause 7.6.1.7
-      const to = Math.min(x, y) / 2; // wall thickness approximation
+      const to = Math.min(x, y) / 2;
       const vt = (Tn * 1e6) / (2 * Ao * to) / 1000;
 
       // Max stress
       const vmax = Math.min(0.2 * fc, 10);
 
-      // Display
+      // Display with NZS references
       document.getElementById('x').textContent = x.toFixed(0);
       document.getElementById('y').textContent = y.toFixed(0);
       document.getElementById('Aoh').textContent = (Aoh / 1e4).toFixed(1) + ' cm²';
       document.getElementById('Ph').textContent = (Ph / 1e3).toFixed(2) + ' m';
-      document.getElementById('tc').textContent = Tc.toFixed(2);
+      document.getElementById('tc').textContent = Tcr.toFixed(2);
       document.getElementById('ts').textContent = Ts.toFixed(2);
       document.getElementById('tn').textContent = Tn.toFixed(2);
       document.getElementById('vt').textContent = vt.toFixed(2);
@@ -194,7 +196,7 @@
       const demandStatus = document.getElementById('demandStatus');
       
       if (vt <= vmax) {
-        status.textContent = `PASS - vt=${vt.toFixed(2)}MPa ≤ vmax=${vmax.toFixed(1)}MPa`;
+        status.textContent = `PASS - vt=${vt.toFixed(2)}MPa ≤ vmax=${vmax.toFixed(1)}MPa (NZS 3101 Clause 7.6.1.7)`;
         status.className = 'status pass';
       } else {
         status.textContent = `FAIL - vt=${vt.toFixed(2)}MPa > vmax=${vmax.toFixed(1)}MPa`;
